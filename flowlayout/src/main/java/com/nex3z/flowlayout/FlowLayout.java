@@ -82,12 +82,23 @@ public class FlowLayout extends ViewGroup {
 
         for (int i = 0; i < childCount; i++) {
             View child = getChildAt(i);
-            measureChild(child, widthMeasureSpec, heightMeasureSpec);
             if (child.getVisibility() == GONE) {
                 continue;
             }
-            int childWidth = child.getMeasuredWidth();
-            int childHeight = child.getMeasuredHeight();
+
+            LayoutParams childParams = child.getLayoutParams();
+            int horizontalMargin = 0, verticalMargin = 0;
+            if (childParams instanceof MarginLayoutParams) {
+                measureChildWithMargins(child, widthMeasureSpec, 0,heightMeasureSpec, measuredHeight);
+                MarginLayoutParams marginParams = (MarginLayoutParams) childParams;
+                horizontalMargin = marginParams.leftMargin + marginParams.rightMargin;
+                verticalMargin = marginParams.topMargin + marginParams.bottomMargin;
+            } else {
+                measureChild(child, widthMeasureSpec, heightMeasureSpec);
+            }
+
+            int childWidth = child.getMeasuredWidth() + horizontalMargin;
+            int childHeight = child.getMeasuredHeight() + verticalMargin;
             if (mFlow && rowWidth + childWidth > rowSize) { // Need flow to next row
                 // Save parameters for current row
                 mHorizontalSpacingForRow.add(
@@ -177,14 +188,35 @@ public class FlowLayout extends ViewGroup {
                 if (child.getVisibility() == GONE) {
                     continue;
                 }
+
+                LayoutParams childParams = child.getLayoutParams();
+                int marginLeft = 0, marginTop = 0, marginRight = 0;
+                if (childParams instanceof MarginLayoutParams) {
+                    MarginLayoutParams marginParams = (MarginLayoutParams) childParams;
+                    marginLeft = marginParams.leftMargin;
+                    marginRight = marginParams.rightMargin;
+                    marginTop = marginParams.topMargin;
+                }
+
                 int childWidth = child.getMeasuredWidth();
                 int childHeight = child.getMeasuredHeight();
-                child.layout(x, y, x + childWidth, y + childHeight);
-                x += childWidth + spacing;
+                child.layout(x + marginLeft, y + marginTop,
+                        x + marginLeft + childWidth, y + marginTop + childHeight);
+                x += childWidth + spacing + marginLeft + marginRight;
             }
             x = paddingLeft;
             y += rowHeight + mAdjustedRowSpacing;
         }
+    }
+
+    @Override
+    protected LayoutParams generateLayoutParams(LayoutParams p) {
+        return new MarginLayoutParams(p);
+    }
+
+    @Override
+    public LayoutParams generateLayoutParams(AttributeSet attrs) {
+        return new MarginLayoutParams(getContext(), attrs);
     }
 
     private int max(int a, int b) {
