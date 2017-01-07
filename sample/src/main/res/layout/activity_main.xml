@@ -11,7 +11,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.nex3z.flowlayout.flowlayout.sample.MainActivity">
+    tools:context="com.nex3z.flowlayout.sample.MainActivity">
 
     <com.nex3z.flowlayout.FlowLayout
         android:id="@+id/flow"

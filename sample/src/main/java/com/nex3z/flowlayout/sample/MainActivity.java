@@ -1,4 +1,4 @@
-package com.nex3z.flowlayout.flowlayout.sample;
+package com.nex3z.flowlayout.sample;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
