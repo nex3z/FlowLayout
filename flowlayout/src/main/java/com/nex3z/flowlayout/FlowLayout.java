@@ -25,7 +25,7 @@ public class FlowLayout extends ViewGroup {
      * Special value for the horizontal spacing of the child views in the last row
      * SPACING_ALIGN means that the horizontal spacing of the child views in the last row keeps
      * the same with the spacing used in the row above. If there is only one row, this value is
-     * ignored and the spacing will be calculated according to rowSpacing.
+     * ignored and the spacing will be calculated according to childSpacing.
      */
     public static final int SPACING_ALIGN = -65537;
 
