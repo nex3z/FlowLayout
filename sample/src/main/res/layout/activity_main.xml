@@ -20,4 +20,71 @@
         app:childSpacing="auto"
         app:rowSpacing="8dp"/>
 
+    <com.nex3z.flowlayout.FlowLayout
+        android:id="@+id/flow2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        app:childSpacing="auto"
+        app:childSpacingForLastRow="align"
+        app:rowSpacing="8dp">
+
+        <TextView
+            android:layout_width="60dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="8dp"
+            android:background="@drawable/label_bg"
+            android:text="@string/sun"/>
+
+        <TextView
+            android:layout_width="60dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="8dp"
+            android:background="@drawable/label_bg"
+            android:text="@string/mon"/>
+
+        <TextView
+            android:layout_width="60dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="8dp"
+            android:background="@drawable/label_bg"
+            android:text="@string/tue"/>
+
+        <TextView
+            android:layout_width="60dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="8dp"
+            android:background="@drawable/label_bg"
+            android:text="@string/wed"/>
+
+        <TextView
+            android:layout_width="60dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="8dp"
+            android:background="@drawable/label_bg"
+            android:text="@string/thu"/>
+
+        <TextView
+            android:layout_width="60dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="8dp"
+            android:background="@drawable/label_bg"
+            android:text="@string/fri"/>
+
+        <TextView
+            android:layout_width="60dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="8dp"
+            android:background="@drawable/label_bg"
+            android:text="@string/sat"/>
+
+    </com.nex3z.flowlayout.FlowLayout>
+
 </LinearLayout>
