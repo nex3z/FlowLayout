@@ -13,13 +13,27 @@ import java.util.List;
 public class FlowLayout extends ViewGroup {
     private static final String LOG_TAG = FlowLayout.class.getSimpleName();
 
+    /**
+     * Special value for the child view spacing.
+     * SPACING_AUTO means that the actual spacing is calculated according to the size of the
+     * container and the number of the child views, so that the child views are placed evenly in
+     * the container.
+     */
     public static final int SPACING_AUTO = -65536;
+
+    /**
+     * Special value for the horizontal spacing of the child views in the last row
+     * SPACING_ALIGN means that the horizontal spacing of the child views in the last row keeps
+     * the same with the spacing used in the row above. If there is only one row, this value is
+     * ignored and the spacing will be calculated according to rowSpacing.
+     */
     public static final int SPACING_ALIGN = -65537;
-    public static final int SPACING_UNDEFINED = -65538;
+
+    private static final int SPACING_UNDEFINED = -65538;
 
     private static final boolean DEFAULT_FLOW = true;
     private static final int DEFAULT_CHILD_SPACING = 0;
-    private static final int DEFAULT_CHILD_SPACING_FOR_LAST_ROW = 0;
+    private static final int DEFAULT_CHILD_SPACING_FOR_LAST_ROW = SPACING_UNDEFINED;
     private static final float DEFAULT_ROW_SPACING = 0;
 
     private boolean mFlow = DEFAULT_FLOW;
@@ -108,7 +122,7 @@ public class FlowLayout extends ViewGroup {
                 measuredHeight += maxChildHeightInRow;
                 measuredWidth = max(measuredWidth, rowWidth);
 
-                // Place the button to next row
+                // Place the child view to next row
                 childNumInRow = 1;
                 rowWidth = childWidth;
                 maxChildHeightInRow = childHeight;
@@ -119,7 +133,7 @@ public class FlowLayout extends ViewGroup {
             }
         }
 
-        // Measure remaining buttons in the last row
+        // Measure remaining child views in the last row
         if (mChildSpacingForLastRow == SPACING_ALIGN) {
             // For SPACING_ALIGN, use the same spacing from the row above if there is more than one
             // row.
@@ -131,9 +145,11 @@ public class FlowLayout extends ViewGroup {
                         getSpacingForRow(mChildSpacing, rowSize, rowWidth, childNumInRow));
             }
         } else if (mChildSpacingForLastRow != SPACING_UNDEFINED) {
+            // For SPACING_AUTO and specific DP values, apply them to the spacing strategy.
             mHorizontalSpacingForRow.add(
                     getSpacingForRow(mChildSpacingForLastRow, rowSize, rowWidth, childNumInRow));
         } else {
+            // For SPACING_UNDEFINED, apply mChildSpacing to the spacing strategy for the last row.
             mHorizontalSpacingForRow.add(
                     getSpacingForRow(mChildSpacing, rowSize, rowWidth, childNumInRow));
         }
@@ -152,7 +168,11 @@ public class FlowLayout extends ViewGroup {
         measuredHeight += getPaddingTop() + getPaddingBottom();
         int rowNum = mHorizontalSpacingForRow.size();
         if (mRowSpacing == SPACING_AUTO) {
-            mAdjustedRowSpacing = (heightSize - measuredHeight) / (rowNum - 1);
+            if (rowNum > 1) {
+                mAdjustedRowSpacing = (heightSize - measuredHeight) / (rowNum - 1);
+            } else {
+                mAdjustedRowSpacing = 0;
+            }
             measuredHeight = heightSize;
         } else {
             mAdjustedRowSpacing = mRowSpacing;
@@ -180,10 +200,10 @@ public class FlowLayout extends ViewGroup {
 
         int rowCount = mChildNumForRow.size(), childIdx = 0;
         for (int row = 0; row < rowCount; row++) {
-            int buttonNum = mChildNumForRow.get(row);
+            int childNum = mChildNumForRow.get(row);
             int rowHeight = mHeightForRow.get(row);
             float spacing = mHorizontalSpacingForRow.get(row);
-            for (int i = 0; i < buttonNum; i++) {
+            for (int i = 0; i < childNum; i++) {
                 View child = getChildAt(childIdx++);
                 if (child.getVisibility() == GONE) {
                     continue;
@@ -219,6 +239,87 @@ public class FlowLayout extends ViewGroup {
         return new MarginLayoutParams(getContext(), attrs);
     }
 
+    /**
+     * Returns whether to allow child views flow to next row when there is no enough space.
+     *
+     * @return Whether to flow child views to next row when there is no enough space.
+     */
+    public boolean isFlow() {
+        return mFlow;
+    }
+
+    /**
+     * Sets whether to allow child views flow to next row when there is no enough space.
+     *
+     * @param flow true to allow flow. false to restrict all child views in one row.
+     */
+    public void setFlow(boolean flow) {
+        mFlow = flow;
+        requestLayout();
+    }
+
+    /**
+     * Returns the horizontal spacing between child views.
+     *
+     * @return The spacing, either {@link FlowLayout#SPACING_AUTO}, or a fixed size in pixels.
+     */
+    public int getChildSpacing() {
+        return mChildSpacing;
+    }
+
+    /**
+     * Sets the horizontal spacing between child views.
+     *
+     * @param childSpacing The spacing, either {@link FlowLayout#SPACING_AUTO}, or a fixed size in
+     *        pixels.
+     */
+    public void setChildSpacing(int childSpacing) {
+        mChildSpacing = childSpacing;
+        requestLayout();
+    }
+
+    /**
+     * Returns the horizontal spacing between child views of the last row.
+     *
+     * @return The spacing, either {@link FlowLayout#SPACING_AUTO},
+     *         {@link FlowLayout#SPACING_ALIGN}, or a fixed size in pixels
+     */
+    public int getChildSpacingForLastRow() {
+        return mChildSpacingForLastRow;
+    }
+
+    /**
+     * Sets the horizontal spacing between child views of the last row.
+     *
+     * @param childSpacingForLastRow The spacing, either {@link FlowLayout#SPACING_AUTO},
+     *        {@link FlowLayout#SPACING_ALIGN}, or a fixed size in pixels
+     */
+    public void setChildSpacingForLastRow(int childSpacingForLastRow) {
+        mChildSpacingForLastRow = childSpacingForLastRow;
+        requestLayout();
+    }
+
+    /**
+     * Returns the vertical spacing between rows.
+     *
+     * @return The spacing, either {@link FlowLayout#SPACING_AUTO}, or a fixed size in pixels.
+     */
+    public float getRowSpacing() {
+        return mRowSpacing;
+    }
+
+    /**
+     * Sets the vertical spacing between rows in pixels. Use SPACING_AUTO to evenly place all rows
+     * in vertical.
+     *
+     * @param rowSpacing The spacing, either {@link FlowLayout#SPACING_AUTO}, or a fixed size in
+     *        pixels.
+     */
+    public void setRowSpacing(float rowSpacing) {
+        mRowSpacing = rowSpacing;
+        requestLayout();
+    }
+
     private int max(int a, int b) {
         return a > b ? a : b;
     }
@@ -227,11 +328,11 @@ public class FlowLayout extends ViewGroup {
         return a < b ? a : b;
     }
 
-    private float getSpacingForRow(int spacingAttribute, int rowSize, int usedSize, int buttonNum) {
+    private float getSpacingForRow(int spacingAttribute, int rowSize, int usedSize, int childNum) {
         float spacing;
         if (spacingAttribute == SPACING_AUTO) {
-            if (buttonNum > 1) {
-                spacing = (rowSize - usedSize) / (buttonNum - 1);
+            if (childNum > 1) {
+                spacing = (rowSize - usedSize) / (childNum - 1);
             } else {
                 spacing = 0;
             }
