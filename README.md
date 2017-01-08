@@ -2,7 +2,9 @@
 
 A FlowLayout for Android, which allows child views flow to next row when there is no enough space. The spacing between child views can be calculated by the FlowLayout so that the views are evenly placed.
 
-![sample](images/sample.png)
+<p align="center">
+<img src="images/sample.png" width="360"/>
+</p>
 
 ## Attributes
 
