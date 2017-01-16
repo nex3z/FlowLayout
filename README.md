@@ -10,18 +10,18 @@ A FlowLayout for Android, which allows child views flow to next row when there i
 ## Gradle
 
 ```
-compile 'com.nex3z:flow-layout:0.1.0'
+compile 'com.nex3z:flow-layout:0.1.1'
 ```
 
 
 ## Attributes
 
-| Attribute              | Format                       | Description                                                                                         |
-|------------------------|------------------------------|-----------------------------------------------------------------------------------------------------|
-| flow                   | boolean                      | `true` to allow flow. `false` to restrict all child views in one row.                               |
-| childSpacing           | `auto`/dimension             | The horizontal spacing between child views. Either `auto`, or a fixed size.                         |
-| childSpacingForLastRow | `auto`/`align`/<br>dimension | The horizontal spacing between child views of the last row. Either `auto`, `align` or a fixed size. |
-| rowSpacing             | `auto`/dimension             | The vertical spacing between rows. Either `auto`, or a fixed size.                                  |
+| Attribute              | Format                       | Description                                                                                                                                          |
+|------------------------|------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------|
+| flow                   | boolean                      | `true` to allow flow. `false` to restrict all child views in one row. The default is `true`.                                                         |
+| childSpacing           | `auto`/dimension             | The horizontal spacing between child views. Either `auto`, or a fixed size. The default is 0dp.                                                      |
+| childSpacingForLastRow | `auto`/`align`/<br>dimension | The horizontal spacing between child views of the last row. Either `auto`, `align` or a fixed size. If not set, `childSpacing` will be used instead. |
+| rowSpacing             | `auto`/dimension             | The vertical spacing between rows. Either `auto`, or a fixed size. The default is 0dp.                                                               |
 
 `auto` means that the actual spacing is calculated as per the size of the `FlowLayout` and the number of child views (or rows), so that the child views (or rows) are placed evenly.
 
