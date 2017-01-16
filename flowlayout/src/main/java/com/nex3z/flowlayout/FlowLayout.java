@@ -124,7 +124,7 @@ public class FlowLayout extends ViewGroup {
 
                 // Place the child view to next row
                 childNumInRow = 1;
-                rowWidth = childWidth;
+                rowWidth = childWidth + (int)tmpSpacing;
                 maxChildHeightInRow = childHeight;
             } else {
                 childNumInRow++;
