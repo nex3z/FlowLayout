@@ -12,5 +12,6 @@
         <attr name="rowSpacing" format="enum|dimension">
             <enum name="auto" value="-65536"/>
         </attr>
+        <attr name="rtl" format="boolean"/>
     </declare-styleable>
 </resources>

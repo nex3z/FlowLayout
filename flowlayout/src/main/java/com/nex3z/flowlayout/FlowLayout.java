@@ -35,12 +35,14 @@ public class FlowLayout extends ViewGroup {
     private static final int DEFAULT_CHILD_SPACING = 0;
     private static final int DEFAULT_CHILD_SPACING_FOR_LAST_ROW = SPACING_UNDEFINED;
     private static final float DEFAULT_ROW_SPACING = 0;
+    private static final boolean DEFAULT_RTL = false;
 
     private boolean mFlow = DEFAULT_FLOW;
     private int mChildSpacing = DEFAULT_CHILD_SPACING;
     private int mChildSpacingForLastRow = DEFAULT_CHILD_SPACING_FOR_LAST_ROW;
     private float mRowSpacing = DEFAULT_ROW_SPACING;
     private float mAdjustedRowSpacing = DEFAULT_ROW_SPACING;
+    private boolean mRtl = DEFAULT_RTL;
 
     private List<Float> mHorizontalSpacingForRow = new ArrayList<>();
     private List<Integer> mHeightForRow = new ArrayList<>();
@@ -72,6 +74,7 @@ public class FlowLayout extends ViewGroup {
             }  catch (NumberFormatException e) {
                 mRowSpacing = a.getDimension(R.styleable.FlowLayout_rowSpacing, dpToPx(DEFAULT_ROW_SPACING));
             }
+            mRtl = a.getBoolean(R.styleable.FlowLayout_rtl, DEFAULT_RTL);
         } finally {
             a.recycle();
         }
@@ -194,8 +197,9 @@ public class FlowLayout extends ViewGroup {
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         int paddingLeft = getPaddingLeft();
+        int paddingRight = getPaddingRight();
         int paddingTop = getPaddingTop();
-        int x = paddingLeft;
+        int x = mRtl ? (getWidth() - paddingRight) : paddingLeft;
         int y = paddingTop;
 
         int rowCount = mChildNumForRow.size(), childIdx = 0;
@@ -220,11 +224,17 @@ public class FlowLayout extends ViewGroup {
 
                 int childWidth = child.getMeasuredWidth();
                 int childHeight = child.getMeasuredHeight();
-                child.layout(x + marginLeft, y + marginTop,
-                        x + marginLeft + childWidth, y + marginTop + childHeight);
-                x += childWidth + spacing + marginLeft + marginRight;
+                if (mRtl) {
+                    child.layout(x - marginRight - childWidth, y + marginTop,
+                            x - marginRight, y + marginTop + childHeight);
+                    x -= childWidth + spacing + marginLeft + marginRight;
+                } else {
+                    child.layout(x + marginLeft, y + marginTop,
+                            x + marginLeft + childWidth, y + marginTop + childHeight);
+                    x += childWidth + spacing + marginLeft + marginRight;
+                }
             }
-            x = paddingLeft;
+            x = mRtl ? (getWidth() - paddingRight) : paddingLeft;
             y += rowHeight + mAdjustedRowSpacing;
         }
     }
