@@ -10,7 +10,7 @@ A FlowLayout for Android, which allows child views flow to next row when there i
 ## Gradle
 
 ```
-compile 'com.nex3z:flow-layout:0.1.1'
+compile 'com.nex3z:flow-layout:0.1.2'
 ```
 
 
@@ -22,6 +22,7 @@ compile 'com.nex3z:flow-layout:0.1.1'
 | childSpacing           | `auto`/dimension             | The horizontal spacing between child views. Either `auto`, or a fixed size. The default is 0dp.                                                      |
 | childSpacingForLastRow | `auto`/`align`/<br>dimension | The horizontal spacing between child views of the last row. Either `auto`, `align` or a fixed size. If not set, `childSpacing` will be used instead. |
 | rowSpacing             | `auto`/dimension             | The vertical spacing between rows. Either `auto`, or a fixed size. The default is 0dp.                                                               |
+| rtl                    | boolean                      | `true` to layout child views from right to left. `false` to layout from left to right. The default is `false`.                                       |
 
 `auto` means that the actual spacing is calculated as per the size of the `FlowLayout` and the number of child views (or rows), so that the child views (or rows) are placed evenly.
 
