@@ -14,6 +14,33 @@ compile 'com.nex3z:flow-layout:0.1.2'
 ```
 
 
+## Usage
+
+```xml
+<com.nex3z.flowlayout.FlowLayout
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:childSpacing="auto"
+    app:childSpacingForLastRow="align"
+    app:rowSpacing="8dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="SUN"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="MON"/>
+
+    <!--...-->
+
+</com.nex3z.flowlayout.FlowLayout>
+```
+
+
 ## Attributes
 
 | Attribute              | Format                       | Description                                                                                                                                          |
