@@ -87,4 +87,11 @@
 
     </com.nex3z.flowlayout.FlowLayout>
 
+    <Button
+        android:id="@+id/btn_recyclerview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/with_recyclerview"/>
+
 </LinearLayout>
