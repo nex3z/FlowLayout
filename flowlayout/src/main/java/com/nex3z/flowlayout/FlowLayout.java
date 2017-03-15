@@ -95,6 +95,7 @@ public class FlowLayout extends ViewGroup {
         int measuredHeight = 0, measuredWidth = 0, childCount = getChildCount();
         int rowWidth = 0, maxChildHeightInRow = 0, childNumInRow = 0;
         int rowSize = widthSize - getPaddingLeft() - getPaddingRight();
+        boolean widthUnspecified = widthMode == MeasureSpec.UNSPECIFIED;
         float tmpSpacing = mChildSpacing == SPACING_AUTO ? 0 : mChildSpacing;
 
         for (int i = 0; i < childCount; i++) {
@@ -116,7 +117,7 @@ public class FlowLayout extends ViewGroup {
 
             int childWidth = child.getMeasuredWidth() + horizontalMargin;
             int childHeight = child.getMeasuredHeight() + verticalMargin;
-            if (mFlow && rowWidth + childWidth > rowSize) { // Need flow to next row
+            if (mFlow && !widthUnspecified && rowWidth + childWidth > rowSize) { // Need flow to next row
                 // Save parameters for current row
                 mHorizontalSpacingForRow.add(
                         getSpacingForRow(mChildSpacing, rowSize, rowWidth, childNumInRow));
@@ -136,8 +137,11 @@ public class FlowLayout extends ViewGroup {
             }
         }
 
-        // Measure remaining child views in the last row
-        if (mChildSpacingForLastRow == SPACING_ALIGN) {
+        if (widthUnspecified) {
+            mHorizontalSpacingForRow.add(tmpSpacing);
+        } else if (mChildSpacingForLastRow == SPACING_ALIGN) {
+            // Measure remaining child views in the last row
+
             // For SPACING_ALIGN, use the same spacing from the row above if there is more than one
             // row.
             if (mHorizontalSpacingForRow.size() >= 1) {
@@ -162,10 +166,14 @@ public class FlowLayout extends ViewGroup {
         measuredHeight += maxChildHeightInRow;
         measuredWidth = max(measuredWidth, rowWidth);
 
-        if (mChildSpacing == SPACING_AUTO) {
+        if (mChildSpacing == SPACING_AUTO && widthMode != MeasureSpec.UNSPECIFIED) {
             measuredWidth = widthSize;
         } else {
-            measuredWidth = min(measuredWidth + getPaddingLeft() + getPaddingRight(), widthSize);
+            if (widthMode == MeasureSpec.UNSPECIFIED) {
+                measuredWidth = measuredWidth + getPaddingLeft() + getPaddingRight();
+            } else {
+                measuredWidth = min(measuredWidth + getPaddingLeft() + getPaddingRight(), widthSize);
+            }
         }
 
         measuredHeight += getPaddingTop() + getPaddingBottom();
@@ -179,19 +187,17 @@ public class FlowLayout extends ViewGroup {
             measuredHeight = heightSize;
         } else {
             mAdjustedRowSpacing = mRowSpacing;
-            measuredHeight = min(
-                    (int)(measuredHeight + mAdjustedRowSpacing * (rowNum - 1)), heightSize);
+            if (heightMode == MeasureSpec.UNSPECIFIED) {
+                measuredHeight = (int)(measuredHeight + mAdjustedRowSpacing * (rowNum - 1));
+            } else {
+                measuredHeight = min(
+                        (int)(measuredHeight + mAdjustedRowSpacing * (rowNum - 1)), heightSize);
+            }
         }
 
-        if (widthMode == MeasureSpec.AT_MOST && heightMode == MeasureSpec.AT_MOST) {
-            setMeasuredDimension(measuredWidth, measuredHeight);
-        } else if (heightMode == MeasureSpec.AT_MOST) {
-            setMeasuredDimension(widthSize, measuredHeight);
-        } else if (widthMode == MeasureSpec.AT_MOST) {
-            setMeasuredDimension(measuredWidth, heightSize);
-        } else {
-            setMeasuredDimension(widthSize, heightSize);
-        }
+        measuredWidth = widthMode == MeasureSpec.EXACTLY ? widthSize : measuredWidth;
+        measuredHeight = heightMode == MeasureSpec.EXACTLY ? heightSize : measuredHeight;
+        setMeasuredDimension(measuredWidth, measuredHeight);
     }
 
     @Override
