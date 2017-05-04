@@ -213,10 +213,12 @@ public class FlowLayout extends ViewGroup {
             int childNum = mChildNumForRow.get(row);
             int rowHeight = mHeightForRow.get(row);
             float spacing = mHorizontalSpacingForRow.get(row);
-            for (int i = 0; i < childNum; i++) {
+            for (int i = 0; i < childNum && childIdx < getChildCount();) {
                 View child = getChildAt(childIdx++);
                 if (child.getVisibility() == GONE) {
                     continue;
+                } else {
+                    i++;
                 }
 
                 LayoutParams childParams = child.getLayoutParams();
