@@ -345,6 +345,15 @@ public class FlowLayout extends ViewGroup {
         requestLayout();
     }
 
+    public int getMaxRows() {
+        return mMaxRows;
+    }
+
+    public void maxRows(int maxRows) {
+        mMaxRows = maxRows;
+        requestLayout();
+    }
+
     private int max(int a, int b) {
         return a > b ? a : b;
     }
