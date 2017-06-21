@@ -13,5 +13,6 @@
             <enum name="auto" value="-65536"/>
         </attr>
         <attr name="rtl" format="boolean"/>
+        <attr name="maxRows" format="integer"/>
     </declare-styleable>
 </resources>

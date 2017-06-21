@@ -36,6 +36,7 @@ public class FlowLayout extends ViewGroup {
     private static final int DEFAULT_CHILD_SPACING_FOR_LAST_ROW = SPACING_UNDEFINED;
     private static final float DEFAULT_ROW_SPACING = 0;
     private static final boolean DEFAULT_RTL = false;
+    private static final int DEFAULT_MAX_ROWS = Integer.MAX_VALUE;
 
     private boolean mFlow = DEFAULT_FLOW;
     private int mChildSpacing = DEFAULT_CHILD_SPACING;
@@ -43,6 +44,7 @@ public class FlowLayout extends ViewGroup {
     private float mRowSpacing = DEFAULT_ROW_SPACING;
     private float mAdjustedRowSpacing = DEFAULT_ROW_SPACING;
     private boolean mRtl = DEFAULT_RTL;
+    private int mMaxRows = DEFAULT_MAX_ROWS;
 
     private List<Float> mHorizontalSpacingForRow = new ArrayList<>();
     private List<Integer> mHeightForRow = new ArrayList<>();
@@ -74,6 +76,7 @@ public class FlowLayout extends ViewGroup {
             }  catch (NumberFormatException e) {
                 mRowSpacing = a.getDimension(R.styleable.FlowLayout_rowSpacing, dpToPx(DEFAULT_ROW_SPACING));
             }
+            mMaxRows = a.getInt(R.styleable.FlowLayout_maxRows, DEFAULT_MAX_ROWS);
             mRtl = a.getBoolean(R.styleable.FlowLayout_rtl, DEFAULT_RTL);
         } finally {
             a.recycle();
@@ -126,7 +129,9 @@ public class FlowLayout extends ViewGroup {
                         getSpacingForRow(childSpacing, rowSize, rowWidth, childNumInRow));
                 mChildNumForRow.add(childNumInRow);
                 mHeightForRow.add(maxChildHeightInRow);
-                measuredHeight += maxChildHeightInRow;
+                if (mHorizontalSpacingForRow.size() <= mMaxRows){
+                    measuredHeight += maxChildHeightInRow;
+                }
                 measuredWidth = max(measuredWidth, rowWidth);
 
                 // Place the child view to next row
@@ -163,7 +168,9 @@ public class FlowLayout extends ViewGroup {
 
         mChildNumForRow.add(childNumInRow);
         mHeightForRow.add(maxChildHeightInRow);
-        measuredHeight += maxChildHeightInRow;
+        if (mHorizontalSpacingForRow.size() <= mMaxRows){
+            measuredHeight += maxChildHeightInRow;
+        }
         measuredWidth = max(measuredWidth, rowWidth);
 
         if (childSpacing == SPACING_AUTO) {
@@ -175,7 +182,7 @@ public class FlowLayout extends ViewGroup {
         }
 
         measuredHeight += getPaddingTop() + getPaddingBottom();
-        int rowNum = mHorizontalSpacingForRow.size();
+        int rowNum = min(mHorizontalSpacingForRow.size(), mMaxRows);
         float rowSpacing = mRowSpacing == SPACING_AUTO && heightMode == MeasureSpec.UNSPECIFIED
                 ? 0 : mRowSpacing;
         if (rowSpacing == SPACING_AUTO) {
@@ -335,6 +342,15 @@ public class FlowLayout extends ViewGroup {
      */
     public void setRowSpacing(float rowSpacing) {
         mRowSpacing = rowSpacing;
+        requestLayout();
+    }
+
+    public int getMaxRows() {
+        return mMaxRows;
+    }
+
+    public void maxRows(int maxRows) {
+        mMaxRows = maxRows;
         requestLayout();
     }
 
