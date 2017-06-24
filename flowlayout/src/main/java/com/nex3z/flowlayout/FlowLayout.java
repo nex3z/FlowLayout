@@ -345,11 +345,21 @@ public class FlowLayout extends ViewGroup {
         requestLayout();
     }
 
+    /**
+     * Returns the maximum number of rows of the FlowLayout.
+     *
+     * @return The maximum number of rows.
+     */
     public int getMaxRows() {
         return mMaxRows;
     }
 
-    public void maxRows(int maxRows) {
+    /**
+     * Sets the number of row of the FlowLayout to be at most maxRows size.
+     *
+     * @param maxRows The maximum number of rows.
+     */
+    public void setMaxRows(int maxRows) {
         mMaxRows = maxRows;
         requestLayout();
     }

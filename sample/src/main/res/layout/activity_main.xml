@@ -17,7 +17,6 @@
         android:id="@+id/flow"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:maxRows="2"
         app:childSpacing="auto"
         app:rowSpacing="8dp"/>
 
