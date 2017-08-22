@@ -5,10 +5,10 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
-    app:flow="true"
-    app:childSpacing="auto"
-    app:childSpacingForLastRow="align"
-    app:rowSpacing="8dp">
+    app:flFlow="true"
+    app:flChildSpacing="auto"
+    app:flChildSpacingForLastRow="align"
+    app:flRowSpacing="8dp">
 
     <TextView
         android:id="@+id/tv_count"

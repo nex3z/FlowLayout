@@ -60,24 +60,24 @@ public class FlowLayout extends ViewGroup {
         TypedArray a = context.getTheme().obtainStyledAttributes(
                 attrs, R.styleable.FlowLayout, 0, 0);
         try {
-            mFlow = a.getBoolean(R.styleable.FlowLayout_flow, DEFAULT_FLOW);
+            mFlow = a.getBoolean(R.styleable.FlowLayout_flFlow, DEFAULT_FLOW);
             try {
-                mChildSpacing = a.getInt(R.styleable.FlowLayout_childSpacing, DEFAULT_CHILD_SPACING);
+                mChildSpacing = a.getInt(R.styleable.FlowLayout_flChildSpacing, DEFAULT_CHILD_SPACING);
             } catch (NumberFormatException e) {
-                mChildSpacing = a.getDimensionPixelSize(R.styleable.FlowLayout_childSpacing, (int)dpToPx(DEFAULT_CHILD_SPACING));
+                mChildSpacing = a.getDimensionPixelSize(R.styleable.FlowLayout_flChildSpacing, (int)dpToPx(DEFAULT_CHILD_SPACING));
             }
             try {
-                mChildSpacingForLastRow = a.getInt(R.styleable.FlowLayout_childSpacingForLastRow, SPACING_UNDEFINED);
+                mChildSpacingForLastRow = a.getInt(R.styleable.FlowLayout_flChildSpacingForLastRow, SPACING_UNDEFINED);
             } catch (NumberFormatException e) {
-                mChildSpacingForLastRow = a.getDimensionPixelSize(R.styleable.FlowLayout_childSpacingForLastRow, (int)dpToPx(DEFAULT_CHILD_SPACING));
+                mChildSpacingForLastRow = a.getDimensionPixelSize(R.styleable.FlowLayout_flChildSpacingForLastRow, (int)dpToPx(DEFAULT_CHILD_SPACING));
             }
             try {
-                mRowSpacing = a.getInt(R.styleable.FlowLayout_rowSpacing, 0);
+                mRowSpacing = a.getInt(R.styleable.FlowLayout_flRowSpacing, 0);
             }  catch (NumberFormatException e) {
-                mRowSpacing = a.getDimension(R.styleable.FlowLayout_rowSpacing, dpToPx(DEFAULT_ROW_SPACING));
+                mRowSpacing = a.getDimension(R.styleable.FlowLayout_flRowSpacing, dpToPx(DEFAULT_ROW_SPACING));
             }
-            mMaxRows = a.getInt(R.styleable.FlowLayout_maxRows, DEFAULT_MAX_ROWS);
-            mRtl = a.getBoolean(R.styleable.FlowLayout_rtl, DEFAULT_RTL);
+            mMaxRows = a.getInt(R.styleable.FlowLayout_flMaxRows, DEFAULT_MAX_ROWS);
+            mRtl = a.getBoolean(R.styleable.FlowLayout_flRtl, DEFAULT_RTL);
         } finally {
             a.recycle();
         }

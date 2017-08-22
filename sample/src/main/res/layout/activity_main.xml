@@ -17,17 +17,17 @@
         android:id="@+id/flow"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:childSpacing="auto"
-        app:rowSpacing="8dp"/>
+        app:flChildSpacing="auto"
+        app:flRowSpacing="8dp"/>
 
     <com.nex3z.flowlayout.FlowLayout
         android:id="@+id/flow2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
-        app:childSpacing="auto"
-        app:childSpacingForLastRow="align"
-        app:rowSpacing="8dp">
+        app:flChildSpacing="auto"
+        app:flChildSpacingForLastRow="align"
+        app:flRowSpacing="8dp">
 
         <TextView
             android:layout_width="60dp"

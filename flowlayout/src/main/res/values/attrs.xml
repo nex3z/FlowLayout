@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="FlowLayout">
-        <attr name="flow" format="boolean"/>
-        <attr name="childSpacing" format="enum|dimension">
+        <attr name="flFlow" format="boolean"/>
+        <attr name="flChildSpacing" format="enum|dimension">
             <enum name="auto" value="-65536"/>
         </attr>
-        <attr name="childSpacingForLastRow" format="enum|dimension">
+        <attr name="flChildSpacingForLastRow" format="enum|dimension">
             <enum name="auto" value="-65536"/>
             <enum name="align" value="-65537"/>
         </attr>
-        <attr name="rowSpacing" format="enum|dimension">
+        <attr name="flRowSpacing" format="enum|dimension">
             <enum name="auto" value="-65536"/>
         </attr>
-        <attr name="rtl" format="boolean"/>
-        <attr name="maxRows" format="integer"/>
+        <attr name="flRtl" format="boolean"/>
+        <attr name="flMaxRows" format="integer"/>
     </declare-styleable>
 </resources>
