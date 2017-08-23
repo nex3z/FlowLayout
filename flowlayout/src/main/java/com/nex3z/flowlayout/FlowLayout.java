@@ -355,7 +355,7 @@ public class FlowLayout extends ViewGroup {
     }
 
     /**
-     * Sets the number of row of the FlowLayout to be at most maxRows size.
+     * Sets the height of the FlowLayout to be at most maxRows tall.
      *
      * @param maxRows The maximum number of rows.
      */

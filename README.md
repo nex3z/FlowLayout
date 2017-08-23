@@ -10,7 +10,7 @@ A FlowLayout for Android, which allows child views flow to next row when there i
 ## Gradle
 
 ```
-compile 'com.nex3z:flow-layout:0.1.4'
+compile 'com.nex3z:flow-layout:1.0.0'
 ```
 
 
@@ -21,9 +21,9 @@ compile 'com.nex3z:flow-layout:0.1.4'
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:childSpacing="auto"
-    app:childSpacingForLastRow="align"
-    app:rowSpacing="8dp">
+    app:flChildSpacing="auto"
+    app:flChildSpacingForLastRow="align"
+    app:flRowSpacing="8dp">
 
     <TextView
         android:layout_width="wrap_content"
@@ -43,13 +43,14 @@ compile 'com.nex3z:flow-layout:0.1.4'
 
 ## Attributes
 
-| Attribute              | Format                       | Description                                                                                                                                          |
-|------------------------|------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------|
-| flow                   | boolean                      | `true` to allow flow. `false` to restrict all child views in one row. The default is `true`.                                                         |
-| childSpacing           | `auto`/dimension             | The horizontal spacing between child views. Either `auto`, or a fixed size. The default is 0dp.                                                      |
-| childSpacingForLastRow | `auto`/`align`/<br>dimension | The horizontal spacing between child views of the last row. Either `auto`, `align` or a fixed size. If not set, `childSpacing` will be used instead. |
-| rowSpacing             | `auto`/dimension             | The vertical spacing between rows. Either `auto`, or a fixed size. The default is 0dp.                                                               |
-| rtl                    | boolean                      | `true` to layout child views from right to left. `false` to layout from left to right. The default is `false`.                                       |
+| Attribute                | Format                       | Description                                                                                                                                          |
+|--------------------------|------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------|
+| flFlow                   | boolean                      | `true` to allow flow. `false` to restrict all child views in one row. The default is `true`.                                                         |
+| flChildSpacing           | `auto`/dimension             | The horizontal spacing between child views. Either `auto`, or a fixed size. The default is 0dp.                                                      |
+| flChildSpacingForLastRow | `auto`/`align`/<br>dimension | The horizontal spacing between child views of the last row. Either `auto`, `align` or a fixed size. If not set, `childSpacing` will be used instead. |
+| flRowSpacing             | `auto`/dimension             | The vertical spacing between rows. Either `auto`, or a fixed size. The default is 0dp.                                                               |
+| flRtl                    | boolean                      | `true` to layout child views from right to left. `false` to layout from left to right. The default is `false`.                                       |
+| flMaxRows                | integer                      | The maximum height of FlowLayout in terms of number of rows.                                                                                         |
 
 `auto` means that the actual spacing is calculated as per the size of the `FlowLayout` and the number of child views (or rows), so that the child views (or rows) are placed evenly.
 
