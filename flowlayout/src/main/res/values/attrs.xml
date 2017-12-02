@@ -14,5 +14,6 @@
         </attr>
         <attr name="flRtl" format="boolean"/>
         <attr name="flMaxRows" format="integer"/>
+        <attr name="android:gravity"/>
     </declare-styleable>
 </resources>
