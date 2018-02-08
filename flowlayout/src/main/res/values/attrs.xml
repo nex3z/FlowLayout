@@ -5,6 +5,7 @@
         <attr name="flChildSpacing" format="enum|dimension">
             <enum name="auto" value="-65536"/>
         </attr>
+        <attr name="flMinChildSpacing" format="dimension"/>
         <attr name="flChildSpacingForLastRow" format="enum|dimension">
             <enum name="auto" value="-65536"/>
             <enum name="align" value="-65537"/>

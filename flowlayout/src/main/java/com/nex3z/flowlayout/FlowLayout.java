@@ -43,6 +43,7 @@ public class FlowLayout extends ViewGroup {
 
     private boolean mFlow = DEFAULT_FLOW;
     private int mChildSpacing = DEFAULT_CHILD_SPACING;
+    private int mMinChildSpacing = DEFAULT_CHILD_SPACING;
     private int mChildSpacingForLastRow = DEFAULT_CHILD_SPACING_FOR_LAST_ROW;
     private float mRowSpacing = DEFAULT_ROW_SPACING;
     private float mAdjustedRowSpacing = DEFAULT_ROW_SPACING;
@@ -73,6 +74,11 @@ public class FlowLayout extends ViewGroup {
                 mChildSpacing = a.getDimensionPixelSize(R.styleable.FlowLayout_flChildSpacing, (int)dpToPx(DEFAULT_CHILD_SPACING));
             }
             try {
+                mMinChildSpacing = a.getInt(R.styleable.FlowLayout_flMinChildSpacing, DEFAULT_CHILD_SPACING);
+            } catch (NumberFormatException e) {
+                mMinChildSpacing = a.getDimensionPixelSize(R.styleable.FlowLayout_flMinChildSpacing, (int)dpToPx(DEFAULT_CHILD_SPACING));
+            }
+            try {
                 mChildSpacingForLastRow = a.getInt(R.styleable.FlowLayout_flChildSpacingForLastRow, SPACING_UNDEFINED);
             } catch (NumberFormatException e) {
                 mChildSpacingForLastRow = a.getDimensionPixelSize(R.styleable.FlowLayout_flChildSpacingForLastRow, (int)dpToPx(DEFAULT_CHILD_SPACING));
@@ -94,10 +100,10 @@ public class FlowLayout extends ViewGroup {
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
-        int widthSize = MeasureSpec.getSize(widthMeasureSpec);
-        int widthMode = MeasureSpec.getMode(widthMeasureSpec);
-        int heightSize = MeasureSpec.getSize(heightMeasureSpec);
-        int heightMode = MeasureSpec.getMode(heightMeasureSpec);
+        final int widthSize = MeasureSpec.getSize(widthMeasureSpec);
+        final int widthMode = MeasureSpec.getMode(widthMeasureSpec);
+        final int heightSize = MeasureSpec.getSize(heightMeasureSpec);
+        final int heightMode = MeasureSpec.getMode(heightMeasureSpec);
 
         mHorizontalSpacingForRow.clear();
         mChildNumForRow.clear();
@@ -105,11 +111,12 @@ public class FlowLayout extends ViewGroup {
 
         int measuredHeight = 0, measuredWidth = 0, childCount = getChildCount();
         int rowWidth = 0, maxChildHeightInRow = 0, childNumInRow = 0;
-        int rowSize = widthSize - getPaddingLeft() - getPaddingRight();
-        boolean allowFlow = widthMode != MeasureSpec.UNSPECIFIED && mFlow;
-        int childSpacing = mChildSpacing == SPACING_AUTO && widthMode == MeasureSpec.UNSPECIFIED
+        final int rowSize = widthSize - getPaddingLeft() - getPaddingRight();
+        int rowTotalChildWidth = 0;
+        final boolean allowFlow = widthMode != MeasureSpec.UNSPECIFIED && mFlow;
+        final int childSpacing = mChildSpacing == SPACING_AUTO && widthMode == MeasureSpec.UNSPECIFIED
                 ? 0 : mChildSpacing;
-        float tmpSpacing = childSpacing == SPACING_AUTO ? 0 : childSpacing;
+        final float tmpSpacing = childSpacing == SPACING_AUTO ? mMinChildSpacing : childSpacing;
 
         for (int i = 0; i < childCount; i++) {
             View child = getChildAt(i);
@@ -133,7 +140,7 @@ public class FlowLayout extends ViewGroup {
             if (allowFlow && rowWidth + childWidth > rowSize) { // Need flow to next row
                 // Save parameters for current row
                 mHorizontalSpacingForRow.add(
-                        getSpacingForRow(childSpacing, rowSize, rowWidth, childNumInRow));
+                        getSpacingForRow(childSpacing, rowSize, rowTotalChildWidth, childNumInRow));
                 mChildNumForRow.add(childNumInRow);
                 mHeightForRow.add(maxChildHeightInRow);
                 mWidthForRow.add(rowWidth - (int)tmpSpacing);
@@ -145,10 +152,12 @@ public class FlowLayout extends ViewGroup {
                 // Place the child view to next row
                 childNumInRow = 1;
                 rowWidth = childWidth + (int)tmpSpacing;
+                rowTotalChildWidth = childWidth;
                 maxChildHeightInRow = childHeight;
             } else {
                 childNumInRow++;
                 rowWidth += childWidth + tmpSpacing;
+                rowTotalChildWidth += childWidth;
                 maxChildHeightInRow = Math.max(maxChildHeightInRow, childHeight);
             }
         }
