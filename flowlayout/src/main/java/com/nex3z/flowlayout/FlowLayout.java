@@ -435,6 +435,15 @@ public class FlowLayout extends ViewGroup {
         }
     }
 
+    public boolean isRtl() {
+        return mRtl;
+    }
+
+    public void setRtl(boolean rtl) {
+        mRtl = rtl;
+        requestLayout();
+    }
+
     private float getSpacingForRow(int spacingAttribute, int rowSize, int usedSize, int childNum) {
         float spacing;
         if (spacingAttribute == SPACING_AUTO) {
