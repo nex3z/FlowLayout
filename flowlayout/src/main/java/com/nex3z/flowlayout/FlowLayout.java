@@ -171,16 +171,16 @@ public class FlowLayout extends ViewGroup {
                         mHorizontalSpacingForRow.get(mHorizontalSpacingForRow.size() - 1));
             } else {
                 mHorizontalSpacingForRow.add(
-                        getSpacingForRow(childSpacing, rowSize, rowWidth, childNumInRow));
+                        getSpacingForRow(childSpacing, rowSize, rowTotalChildWidth, childNumInRow));
             }
         } else if (mChildSpacingForLastRow != SPACING_UNDEFINED) {
             // For SPACING_AUTO and specific DP values, apply them to the spacing strategy.
             mHorizontalSpacingForRow.add(
-                    getSpacingForRow(mChildSpacingForLastRow, rowSize, rowWidth, childNumInRow));
+                    getSpacingForRow(mChildSpacingForLastRow, rowSize, rowTotalChildWidth, childNumInRow));
         } else {
             // For SPACING_UNDEFINED, apply childSpacing to the spacing strategy for the last row.
             mHorizontalSpacingForRow.add(
-                    getSpacingForRow(childSpacing, rowSize, rowWidth, childNumInRow));
+                    getSpacingForRow(childSpacing, rowSize, rowTotalChildWidth, childNumInRow));
         }
 
         mChildNumForRow.add(childNumInRow);
@@ -441,6 +441,15 @@ public class FlowLayout extends ViewGroup {
 
     public void setRtl(boolean rtl) {
         mRtl = rtl;
+        requestLayout();
+    }
+
+    public int getMinChildSpacing() {
+        return mMinChildSpacing;
+    }
+
+    public void setMinChildSpacing(int minChildSpacing) {
+        this.mMinChildSpacing = minChildSpacing;
         requestLayout();
     }
 
