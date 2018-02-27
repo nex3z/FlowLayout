@@ -106,8 +106,9 @@ public class FlowLayout extends ViewGroup {
         final int heightMode = MeasureSpec.getMode(heightMeasureSpec);
 
         mHorizontalSpacingForRow.clear();
-        mChildNumForRow.clear();
         mHeightForRow.clear();
+        mWidthForRow.clear();
+        mChildNumForRow.clear();
 
         int measuredHeight = 0, measuredWidth = 0, childCount = getChildCount();
         int rowWidth = 0, maxChildHeightInRow = 0, childNumInRow = 0;
