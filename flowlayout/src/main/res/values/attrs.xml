@@ -14,6 +14,7 @@
             <enum name="auto" value="-65536"/>
         </attr>
         <attr name="flRtl" format="boolean"/>
+        <attr name="flAlignBottom" format="boolean"/>
         <attr name="flMaxRows" format="integer"/>
         <attr name="android:gravity"/>
     </declare-styleable>
