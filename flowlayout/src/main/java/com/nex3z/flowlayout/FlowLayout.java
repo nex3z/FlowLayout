@@ -49,7 +49,7 @@ public class FlowLayout extends ViewGroup {
     private float mRowSpacing = DEFAULT_ROW_SPACING;
     private float mAdjustedRowSpacing = DEFAULT_ROW_SPACING;
     private boolean mRtl = DEFAULT_RTL;
-    private final boolean mAlignBottom;
+    private boolean mAlignBottom;
     private int mMaxRows = DEFAULT_MAX_ROWS;
     private int mGravity = UNSPECIFIED_GRAVITY;
     private int mExactMeasuredHeight;
@@ -453,6 +453,15 @@ public class FlowLayout extends ViewGroup {
 
     public void setRtl(boolean rtl) {
         mRtl = rtl;
+        requestLayout();
+    }
+
+    public boolean isAlignBottom() {
+        return mAlignBottom;
+    }
+
+    public void setAlignBottom(boolean alignBottom) {
+        mAlignBottom = alignBottom;
         requestLayout();
     }
 
