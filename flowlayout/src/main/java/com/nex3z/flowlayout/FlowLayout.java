@@ -39,6 +39,7 @@ public class FlowLayout extends ViewGroup {
     private static final int DEFAULT_CHILD_SPACING_FOR_LAST_ROW = SPACING_UNDEFINED;
     private static final float DEFAULT_ROW_SPACING = 0;
     private static final boolean DEFAULT_RTL = false;
+    private static final boolean DEFAULT_ALIGN_BOTTOM = false;
     private static final int DEFAULT_MAX_ROWS = Integer.MAX_VALUE;
 
     private boolean mFlow = DEFAULT_FLOW;
@@ -48,6 +49,7 @@ public class FlowLayout extends ViewGroup {
     private float mRowSpacing = DEFAULT_ROW_SPACING;
     private float mAdjustedRowSpacing = DEFAULT_ROW_SPACING;
     private boolean mRtl = DEFAULT_RTL;
+    private boolean mAlignBottom;
     private int mMaxRows = DEFAULT_MAX_ROWS;
     private int mGravity = UNSPECIFIED_GRAVITY;
     private int mExactMeasuredHeight;
@@ -90,6 +92,7 @@ public class FlowLayout extends ViewGroup {
             }
             mMaxRows = a.getInt(R.styleable.FlowLayout_flMaxRows, DEFAULT_MAX_ROWS);
             mRtl = a.getBoolean(R.styleable.FlowLayout_flRtl, DEFAULT_RTL);
+            mAlignBottom = a.getBoolean(R.styleable.FlowLayout_flAlignBottom, DEFAULT_ALIGN_BOTTOM);
             mGravity = a.getInt(R.styleable.FlowLayout_android_gravity, UNSPECIFIED_GRAVITY);
         } finally {
             a.recycle();
@@ -282,13 +285,21 @@ public class FlowLayout extends ViewGroup {
 
                 int childWidth = child.getMeasuredWidth();
                 int childHeight = child.getMeasuredHeight();
+                int tt = y + marginTop;
+                int bb = y + marginTop + childHeight;
+                if (mAlignBottom) {
+                    bb = y + rowHeight;
+                    tt = bb - childHeight;
+                }
                 if (mRtl) {
-                    child.layout(x - marginRight - childWidth, y + marginTop,
-                            x - marginRight, y + marginTop + childHeight);
+                    int l1 = x - marginRight - childWidth;
+                    int r1 = x - marginRight;
+                    child.layout(l1, tt, r1, bb);
                     x -= childWidth + spacing + marginLeft + marginRight;
                 } else {
-                    child.layout(x + marginLeft, y + marginTop,
-                            x + marginLeft + childWidth, y + marginTop + childHeight);
+                    int l2 = x + marginLeft;
+                    int r2 = x + marginLeft + childWidth;
+                    child.layout(l2, tt, r2, bb);
                     x += childWidth + spacing + marginLeft + marginRight;
                 }
             }
@@ -442,6 +453,15 @@ public class FlowLayout extends ViewGroup {
 
     public void setRtl(boolean rtl) {
         mRtl = rtl;
+        requestLayout();
+    }
+
+    public boolean isAlignBottom() {
+        return mAlignBottom;
+    }
+
+    public void setAlignBottom(boolean alignBottom) {
+        mAlignBottom = alignBottom;
         requestLayout();
     }
 

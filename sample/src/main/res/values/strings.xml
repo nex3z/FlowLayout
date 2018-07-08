@@ -7,5 +7,6 @@
     <string name="thu">THU</string>
     <string name="fri">FRI</string>
     <string name="sat">SAT</string>
+    <string name="align_bottom">BOTTOM</string>
     <string name="with_recyclerview">FlowLayout with RecyclerView</string>
 </resources>
