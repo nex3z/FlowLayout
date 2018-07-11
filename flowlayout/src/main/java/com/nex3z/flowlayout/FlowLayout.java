@@ -32,6 +32,7 @@ public class FlowLayout extends ViewGroup {
 
     private static final int SPACING_UNDEFINED = -65538;
 
+    private static final int UNSPECIFIED_LAYOUT_GRAVITY = -1;
     private static final int UNSPECIFIED_GRAVITY = -1;
 
     private static final boolean DEFAULT_FLOW = true;
@@ -39,7 +40,6 @@ public class FlowLayout extends ViewGroup {
     private static final int DEFAULT_CHILD_SPACING_FOR_LAST_ROW = SPACING_UNDEFINED;
     private static final float DEFAULT_ROW_SPACING = 0;
     private static final boolean DEFAULT_RTL = false;
-    private static final boolean DEFAULT_ALIGN_BOTTOM = false;
     private static final int DEFAULT_MAX_ROWS = Integer.MAX_VALUE;
 
     private boolean mFlow = DEFAULT_FLOW;
@@ -49,8 +49,8 @@ public class FlowLayout extends ViewGroup {
     private float mRowSpacing = DEFAULT_ROW_SPACING;
     private float mAdjustedRowSpacing = DEFAULT_ROW_SPACING;
     private boolean mRtl = DEFAULT_RTL;
-    private boolean mAlignBottom;
     private int mMaxRows = DEFAULT_MAX_ROWS;
+    private int mLayoutGravity = UNSPECIFIED_LAYOUT_GRAVITY;
     private int mGravity = UNSPECIFIED_GRAVITY;
     private int mExactMeasuredHeight;
 
@@ -92,7 +92,7 @@ public class FlowLayout extends ViewGroup {
             }
             mMaxRows = a.getInt(R.styleable.FlowLayout_flMaxRows, DEFAULT_MAX_ROWS);
             mRtl = a.getBoolean(R.styleable.FlowLayout_flRtl, DEFAULT_RTL);
-            mAlignBottom = a.getBoolean(R.styleable.FlowLayout_flAlignBottom, DEFAULT_ALIGN_BOTTOM);
+            mLayoutGravity = a.getInt(R.styleable.FlowLayout_android_layout_gravity, UNSPECIFIED_LAYOUT_GRAVITY);
             mGravity = a.getInt(R.styleable.FlowLayout_android_gravity, UNSPECIFIED_GRAVITY);
         } finally {
             a.recycle();
@@ -240,10 +240,10 @@ public class FlowLayout extends ViewGroup {
         int x = mRtl ? (getWidth() - paddingRight) : paddingLeft;
         int y = paddingTop;
 
-        int verticalGravity = mGravity & Gravity.VERTICAL_GRAVITY_MASK;
-        int horizontalGravity = mGravity & Gravity.HORIZONTAL_GRAVITY_MASK;
+        int verticalLayoutGravity = mLayoutGravity & Gravity.VERTICAL_GRAVITY_MASK;
+        int horizontalLayoutGravity = mLayoutGravity & Gravity.HORIZONTAL_GRAVITY_MASK;
 
-        switch (verticalGravity) {
+        switch (verticalLayoutGravity) {
             case Gravity.CENTER_VERTICAL: {
                 int offset = (b - t - paddingTop - paddingBottom - mExactMeasuredHeight) / 2;
                 y += offset;
@@ -259,7 +259,10 @@ public class FlowLayout extends ViewGroup {
         }
 
         int horizontalPadding = paddingLeft + paddingRight, layoutWidth = r - l;
-        x += getHorizontalGravityOffsetForRow(horizontalGravity, layoutWidth, horizontalPadding, 0);
+        x += getHorizontalGravityOffsetForRow(horizontalLayoutGravity, layoutWidth, horizontalPadding, 0);
+
+        int verticalGravity = mGravity & Gravity.VERTICAL_GRAVITY_MASK;
+//        int horizontalGravity = mGravity & Gravity.HORIZONTAL_GRAVITY_MASK;
 
         int rowCount = mChildNumForRow.size(), childIdx = 0;
         for (int row = 0; row < rowCount; row++) {
@@ -275,22 +278,24 @@ public class FlowLayout extends ViewGroup {
                 }
 
                 LayoutParams childParams = child.getLayoutParams();
-                int marginLeft = 0, marginTop = 0, marginRight = 0;
+                int marginLeft = 0, marginTop = 0, marginBottom = 0, marginRight = 0;
                 if (childParams instanceof MarginLayoutParams) {
                     MarginLayoutParams marginParams = (MarginLayoutParams) childParams;
                     marginLeft = marginParams.leftMargin;
                     marginRight = marginParams.rightMargin;
                     marginTop = marginParams.topMargin;
+                    marginBottom = marginParams.bottomMargin;
                 }
 
                 int childWidth = child.getMeasuredWidth();
                 int childHeight = child.getMeasuredHeight();
                 int tt = y + marginTop;
-                int bb = y + marginTop + childHeight;
-                if (mAlignBottom) {
-                    bb = y + rowHeight;
-                    tt = bb - childHeight;
+                if (verticalGravity == Gravity.BOTTOM) {
+                    tt = y + rowHeight - marginBottom - childHeight;
+                } else if (verticalGravity == Gravity.CENTER_VERTICAL) {
+                    tt = y + marginTop + (rowHeight - marginTop - marginBottom - childHeight) / 2;
                 }
+                int bb = tt + childHeight;
                 if (mRtl) {
                     int l1 = x - marginRight - childWidth;
                     int r1 = x - marginRight;
@@ -305,7 +310,7 @@ public class FlowLayout extends ViewGroup {
             }
             x = mRtl ? (getWidth() - paddingRight) : paddingLeft;
             x += getHorizontalGravityOffsetForRow(
-                    horizontalGravity, layoutWidth, horizontalPadding, row + 1);
+                    horizontalLayoutGravity, layoutWidth, horizontalPadding, row + 1);
             y += rowHeight + mAdjustedRowSpacing;
         }
     }
@@ -440,6 +445,13 @@ public class FlowLayout extends ViewGroup {
         requestLayout();
     }
 
+    public void setLayoutGravity(int layoutGravity) {
+        if (mLayoutGravity != layoutGravity) {
+            mLayoutGravity = layoutGravity;
+            requestLayout();
+        }
+    }
+
     public void setGravity(int gravity) {
         if (mGravity != gravity) {
             mGravity = gravity;
@@ -453,15 +465,6 @@ public class FlowLayout extends ViewGroup {
 
     public void setRtl(boolean rtl) {
         mRtl = rtl;
-        requestLayout();
-    }
-
-    public boolean isAlignBottom() {
-        return mAlignBottom;
-    }
-
-    public void setAlignBottom(boolean alignBottom) {
-        mAlignBottom = alignBottom;
         requestLayout();
     }
 
