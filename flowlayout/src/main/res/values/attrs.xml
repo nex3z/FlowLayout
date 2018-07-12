@@ -15,7 +15,12 @@
         </attr>
         <attr name="flRtl" format="boolean"/>
         <attr name="flMaxRows" format="integer"/>
-        <attr name="android:layout_gravity"/>
+        <attr name="flRowVerticalGravity" format="enum">
+            <enum name="auto" value="-65536"/>
+            <enum name="top" value="0x30"/>
+            <enum name="center" value="0x10"/>
+            <enum name="bottom" value="0x50"/>
+        </attr>
         <attr name="android:gravity"/>
     </declare-styleable>
 </resources>

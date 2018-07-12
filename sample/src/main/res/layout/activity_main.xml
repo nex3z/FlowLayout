@@ -91,71 +91,10 @@
         </com.nex3z.flowlayout.FlowLayout>
 
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:layout_marginTop="32dp"
-            android:background="@drawable/box"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:text="layout_gravity"
-                android:textSize="16sp" />
-
-            <com.nex3z.flowlayout.FlowLayout
-                android:id="@+id/layout_gravity_default"
-                android:layout_width="70dp"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="4dp"
-                android:background="@drawable/box">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="default"
-                    android:textSize="16sp" />
-            </com.nex3z.flowlayout.FlowLayout>
-
-            <com.nex3z.flowlayout.FlowLayout
-                android:id="@+id/layout_gravity_center"
-                android:layout_width="70dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginLeft="4dp"
-                android:background="@drawable/box">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="center"
-                    android:textSize="16sp" />
-            </com.nex3z.flowlayout.FlowLayout>
-
-            <com.nex3z.flowlayout.FlowLayout
-                android:id="@+id/layout_gravity_bottom"
-                android:layout_width="70dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
-                android:layout_marginLeft="4dp"
-                android:background="@drawable/box">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="bottom"
-                    android:textSize="16sp" />
-            </com.nex3z.flowlayout.FlowLayout>
-
-        </LinearLayout>
-
         <com.nex3z.flowlayout.FlowLayout
             android:id="@+id/gravity_default"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
             android:layout_marginTop="32dp"
             android:background="@drawable/box"
             app:flChildSpacing="8dp"
@@ -165,24 +104,55 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:background="@drawable/label_bg2"
                 android:text="gravity"
                 android:textSize="24sp" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="default/top" />
+                android:background="@drawable/label_bg2"
+                android:text="top/def" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
+                android:background="@drawable/label_bg2"
+                android:layout_margin="4dp"
                 android:text="add-margin" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingTop="4dp"
+                android:background="@drawable/label_bg2"
+                android:padding="4dp"
+                android:text="add-padding" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/label_bg2"
+                android:text="gravity"
+                android:textSize="24sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/label_bg2"
+                android:text="default" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/label_bg2"
+                android:layout_margin="4dp"
+                android:text="add-margin" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/label_bg2"
+                android:padding="4dp"
                 android:text="add-padding" />
         </com.nex3z.flowlayout.FlowLayout>
 
@@ -190,10 +160,9 @@
             android:id="@+id/gravity_center"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
             android:layout_marginTop="32dp"
             android:background="@drawable/box"
-            android:gravity="center"
+            app:flRowVerticalGravity="center"
             app:flChildSpacing="8dp"
             app:flChildSpacingForLastRow="align"
             app:flRowSpacing="8dp">
@@ -201,23 +170,54 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:background="@drawable/label_bg2"
                 android:text="gravity"
                 android:textSize="24sp" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:background="@drawable/label_bg2"
                 android:text="center" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:background="@drawable/label_bg2"
                 android:layout_margin="4dp"
                 android:text="add-margin" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:background="@drawable/label_bg2"
+                android:padding="4dp"
+                android:text="add-padding" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/label_bg2"
+                android:text="gravity"
+                android:textSize="24sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/label_bg2"
+                android:text="center" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/label_bg2"
+                android:layout_margin="4dp"
+                android:text="add-margin" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/label_bg2"
                 android:padding="4dp"
                 android:text="add-padding" />
         </com.nex3z.flowlayout.FlowLayout>
@@ -226,10 +226,9 @@
             android:id="@+id/gravity_bottom"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
             android:layout_marginTop="32dp"
             android:background="@drawable/box"
-            android:gravity="bottom"
+            app:flRowVerticalGravity="bottom"
             app:flChildSpacing="8dp"
             app:flChildSpacingForLastRow="align"
             app:flRowSpacing="8dp">
@@ -237,23 +236,55 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:background="@drawable/label_bg2"
                 android:text="gravity"
                 android:textSize="24sp" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:background="@drawable/label_bg2"
                 android:text="bottom" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:background="@drawable/label_bg2"
                 android:layout_margin="4dp"
                 android:text="add-margin" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:background="@drawable/label_bg2"
+                android:padding="4dp"
+                android:text="add-padding" />
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/label_bg2"
+                android:text="gravity"
+                android:textSize="24sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/label_bg2"
+                android:text="bottom" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/label_bg2"
+                android:layout_margin="4dp"
+                android:text="add-margin" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/label_bg2"
                 android:padding="4dp"
                 android:text="add-padding" />
         </com.nex3z.flowlayout.FlowLayout>
@@ -262,7 +293,7 @@
             android:id="@+id/btn_recyclerview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="32dp"
             android:text="@string/with_recyclerview" />
 
     </LinearLayout>

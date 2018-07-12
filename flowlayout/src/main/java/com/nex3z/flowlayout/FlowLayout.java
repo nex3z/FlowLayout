@@ -32,8 +32,9 @@ public class FlowLayout extends ViewGroup {
 
     private static final int SPACING_UNDEFINED = -65538;
 
-    private static final int UNSPECIFIED_LAYOUT_GRAVITY = -1;
     private static final int UNSPECIFIED_GRAVITY = -1;
+
+    private static final int ROW_VERTICAL_GRAVITY_AUTO = -65536;
 
     private static final boolean DEFAULT_FLOW = true;
     private static final int DEFAULT_CHILD_SPACING = 0;
@@ -50,8 +51,8 @@ public class FlowLayout extends ViewGroup {
     private float mAdjustedRowSpacing = DEFAULT_ROW_SPACING;
     private boolean mRtl = DEFAULT_RTL;
     private int mMaxRows = DEFAULT_MAX_ROWS;
-    private int mLayoutGravity = UNSPECIFIED_LAYOUT_GRAVITY;
     private int mGravity = UNSPECIFIED_GRAVITY;
+    private int mRowVerticalGravity = ROW_VERTICAL_GRAVITY_AUTO;
     private int mExactMeasuredHeight;
 
     private List<Float> mHorizontalSpacingForRow = new ArrayList<>();
@@ -73,27 +74,27 @@ public class FlowLayout extends ViewGroup {
             try {
                 mChildSpacing = a.getInt(R.styleable.FlowLayout_flChildSpacing, DEFAULT_CHILD_SPACING);
             } catch (NumberFormatException e) {
-                mChildSpacing = a.getDimensionPixelSize(R.styleable.FlowLayout_flChildSpacing, (int)dpToPx(DEFAULT_CHILD_SPACING));
+                mChildSpacing = a.getDimensionPixelSize(R.styleable.FlowLayout_flChildSpacing, (int) dpToPx(DEFAULT_CHILD_SPACING));
             }
             try {
                 mMinChildSpacing = a.getInt(R.styleable.FlowLayout_flMinChildSpacing, DEFAULT_CHILD_SPACING);
             } catch (NumberFormatException e) {
-                mMinChildSpacing = a.getDimensionPixelSize(R.styleable.FlowLayout_flMinChildSpacing, (int)dpToPx(DEFAULT_CHILD_SPACING));
+                mMinChildSpacing = a.getDimensionPixelSize(R.styleable.FlowLayout_flMinChildSpacing, (int) dpToPx(DEFAULT_CHILD_SPACING));
             }
             try {
                 mChildSpacingForLastRow = a.getInt(R.styleable.FlowLayout_flChildSpacingForLastRow, SPACING_UNDEFINED);
             } catch (NumberFormatException e) {
-                mChildSpacingForLastRow = a.getDimensionPixelSize(R.styleable.FlowLayout_flChildSpacingForLastRow, (int)dpToPx(DEFAULT_CHILD_SPACING));
+                mChildSpacingForLastRow = a.getDimensionPixelSize(R.styleable.FlowLayout_flChildSpacingForLastRow, (int) dpToPx(DEFAULT_CHILD_SPACING));
             }
             try {
                 mRowSpacing = a.getInt(R.styleable.FlowLayout_flRowSpacing, 0);
-            }  catch (NumberFormatException e) {
+            } catch (NumberFormatException e) {
                 mRowSpacing = a.getDimension(R.styleable.FlowLayout_flRowSpacing, dpToPx(DEFAULT_ROW_SPACING));
             }
             mMaxRows = a.getInt(R.styleable.FlowLayout_flMaxRows, DEFAULT_MAX_ROWS);
             mRtl = a.getBoolean(R.styleable.FlowLayout_flRtl, DEFAULT_RTL);
-            mLayoutGravity = a.getInt(R.styleable.FlowLayout_android_layout_gravity, UNSPECIFIED_LAYOUT_GRAVITY);
             mGravity = a.getInt(R.styleable.FlowLayout_android_gravity, UNSPECIFIED_GRAVITY);
+            mRowVerticalGravity = a.getInt(R.styleable.FlowLayout_flRowVerticalGravity, ROW_VERTICAL_GRAVITY_AUTO);
         } finally {
             a.recycle();
         }
@@ -131,7 +132,7 @@ public class FlowLayout extends ViewGroup {
             LayoutParams childParams = child.getLayoutParams();
             int horizontalMargin = 0, verticalMargin = 0;
             if (childParams instanceof MarginLayoutParams) {
-                measureChildWithMargins(child, widthMeasureSpec, 0,heightMeasureSpec, measuredHeight);
+                measureChildWithMargins(child, widthMeasureSpec, 0, heightMeasureSpec, measuredHeight);
                 MarginLayoutParams marginParams = (MarginLayoutParams) childParams;
                 horizontalMargin = marginParams.leftMargin + marginParams.rightMargin;
                 verticalMargin = marginParams.topMargin + marginParams.bottomMargin;
@@ -147,15 +148,15 @@ public class FlowLayout extends ViewGroup {
                         getSpacingForRow(childSpacing, rowSize, rowTotalChildWidth, childNumInRow));
                 mChildNumForRow.add(childNumInRow);
                 mHeightForRow.add(maxChildHeightInRow);
-                mWidthForRow.add(rowWidth - (int)tmpSpacing);
-                if (mHorizontalSpacingForRow.size() <= mMaxRows){
+                mWidthForRow.add(rowWidth - (int) tmpSpacing);
+                if (mHorizontalSpacingForRow.size() <= mMaxRows) {
                     measuredHeight += maxChildHeightInRow;
                 }
                 measuredWidth = Math.max(measuredWidth, rowWidth);
 
                 // Place the child view to next row
                 childNumInRow = 1;
-                rowWidth = childWidth + (int)tmpSpacing;
+                rowWidth = childWidth + (int) tmpSpacing;
                 rowTotalChildWidth = childWidth;
                 maxChildHeightInRow = childHeight;
             } else {
@@ -189,8 +190,8 @@ public class FlowLayout extends ViewGroup {
 
         mChildNumForRow.add(childNumInRow);
         mHeightForRow.add(maxChildHeightInRow);
-        mWidthForRow.add(rowWidth - (int)tmpSpacing);
-        if (mHorizontalSpacingForRow.size() <= mMaxRows){
+        mWidthForRow.add(rowWidth - (int) tmpSpacing);
+        if (mHorizontalSpacingForRow.size() <= mMaxRows) {
             measuredHeight += maxChildHeightInRow;
         }
         measuredWidth = Math.max(measuredWidth, rowWidth);
@@ -220,7 +221,7 @@ public class FlowLayout extends ViewGroup {
                 measuredHeight = heightMode == MeasureSpec.UNSPECIFIED
                         ? ((int) (measuredHeight + mAdjustedRowSpacing * (rowNum - 1)))
                         : (Math.min((int) (measuredHeight + mAdjustedRowSpacing * (rowNum - 1)),
-                                    heightSize));
+                        heightSize));
             }
         }
 
@@ -240,10 +241,10 @@ public class FlowLayout extends ViewGroup {
         int x = mRtl ? (getWidth() - paddingRight) : paddingLeft;
         int y = paddingTop;
 
-        int verticalLayoutGravity = mLayoutGravity & Gravity.VERTICAL_GRAVITY_MASK;
-        int horizontalLayoutGravity = mLayoutGravity & Gravity.HORIZONTAL_GRAVITY_MASK;
+        int verticalGravity = mGravity & Gravity.VERTICAL_GRAVITY_MASK;
+        int horizontalGravity = mGravity & Gravity.HORIZONTAL_GRAVITY_MASK;
 
-        switch (verticalLayoutGravity) {
+        switch (verticalGravity) {
             case Gravity.CENTER_VERTICAL: {
                 int offset = (b - t - paddingTop - paddingBottom - mExactMeasuredHeight) / 2;
                 y += offset;
@@ -259,17 +260,16 @@ public class FlowLayout extends ViewGroup {
         }
 
         int horizontalPadding = paddingLeft + paddingRight, layoutWidth = r - l;
-        x += getHorizontalGravityOffsetForRow(horizontalLayoutGravity, layoutWidth, horizontalPadding, 0);
+        x += getHorizontalGravityOffsetForRow(horizontalGravity, layoutWidth, horizontalPadding, 0);
 
-        int verticalGravity = mGravity & Gravity.VERTICAL_GRAVITY_MASK;
-//        int horizontalGravity = mGravity & Gravity.HORIZONTAL_GRAVITY_MASK;
+        int verticalRowGravity = mRowVerticalGravity & Gravity.VERTICAL_GRAVITY_MASK;
 
         int rowCount = mChildNumForRow.size(), childIdx = 0;
         for (int row = 0; row < rowCount; row++) {
             int childNum = mChildNumForRow.get(row);
             int rowHeight = mHeightForRow.get(row);
             float spacing = mHorizontalSpacingForRow.get(row);
-            for (int i = 0; i < childNum && childIdx < getChildCount();) {
+            for (int i = 0; i < childNum && childIdx < getChildCount(); ) {
                 View child = getChildAt(childIdx++);
                 if (child.getVisibility() == GONE) {
                     continue;
@@ -290,9 +290,9 @@ public class FlowLayout extends ViewGroup {
                 int childWidth = child.getMeasuredWidth();
                 int childHeight = child.getMeasuredHeight();
                 int tt = y + marginTop;
-                if (verticalGravity == Gravity.BOTTOM) {
+                if (verticalRowGravity == Gravity.BOTTOM) {
                     tt = y + rowHeight - marginBottom - childHeight;
-                } else if (verticalGravity == Gravity.CENTER_VERTICAL) {
+                } else if (verticalRowGravity == Gravity.CENTER_VERTICAL) {
                     tt = y + marginTop + (rowHeight - marginTop - marginBottom - childHeight) / 2;
                 }
                 int bb = tt + childHeight;
@@ -310,7 +310,7 @@ public class FlowLayout extends ViewGroup {
             }
             x = mRtl ? (getWidth() - paddingRight) : paddingLeft;
             x += getHorizontalGravityOffsetForRow(
-                    horizontalLayoutGravity, layoutWidth, horizontalPadding, row + 1);
+                    horizontalGravity, layoutWidth, horizontalPadding, row + 1);
             y += rowHeight + mAdjustedRowSpacing;
         }
     }
@@ -377,7 +377,7 @@ public class FlowLayout extends ViewGroup {
      * Sets the horizontal spacing between child views.
      *
      * @param childSpacing The spacing, either {@link FlowLayout#SPACING_AUTO}, or a fixed size in
-     *        pixels.
+     *                     pixels.
      */
     public void setChildSpacing(int childSpacing) {
         mChildSpacing = childSpacing;
@@ -388,7 +388,7 @@ public class FlowLayout extends ViewGroup {
      * Returns the horizontal spacing between child views of the last row.
      *
      * @return The spacing, either {@link FlowLayout#SPACING_AUTO},
-     *         {@link FlowLayout#SPACING_ALIGN}, or a fixed size in pixels
+     * {@link FlowLayout#SPACING_ALIGN}, or a fixed size in pixels
      */
     public int getChildSpacingForLastRow() {
         return mChildSpacingForLastRow;
@@ -398,7 +398,7 @@ public class FlowLayout extends ViewGroup {
      * Sets the horizontal spacing between child views of the last row.
      *
      * @param childSpacingForLastRow The spacing, either {@link FlowLayout#SPACING_AUTO},
-     *        {@link FlowLayout#SPACING_ALIGN}, or a fixed size in pixels
+     *                               {@link FlowLayout#SPACING_ALIGN}, or a fixed size in pixels
      */
     public void setChildSpacingForLastRow(int childSpacingForLastRow) {
         mChildSpacingForLastRow = childSpacingForLastRow;
@@ -419,7 +419,7 @@ public class FlowLayout extends ViewGroup {
      * in vertical.
      *
      * @param rowSpacing The spacing, either {@link FlowLayout#SPACING_AUTO}, or a fixed size in
-     *        pixels.
+     *                   pixels.
      */
     public void setRowSpacing(float rowSpacing) {
         mRowSpacing = rowSpacing;
@@ -445,16 +445,16 @@ public class FlowLayout extends ViewGroup {
         requestLayout();
     }
 
-    public void setLayoutGravity(int layoutGravity) {
-        if (mLayoutGravity != layoutGravity) {
-            mLayoutGravity = layoutGravity;
+    public void setGravity(int gravity) {
+        if (mGravity != gravity) {
+            mGravity = gravity;
             requestLayout();
         }
     }
 
-    public void setGravity(int gravity) {
-        if (mGravity != gravity) {
-            mGravity = gravity;
+    public void setRowVerticalGravity(int rowVerticalGravity) {
+        if (mRowVerticalGravity != rowVerticalGravity) {
+            mRowVerticalGravity = rowVerticalGravity;
             requestLayout();
         }
     }
@@ -491,7 +491,7 @@ public class FlowLayout extends ViewGroup {
         return spacing;
     }
 
-    private float dpToPx(float dp){
+    private float dpToPx(float dp) {
         return TypedValue.applyDimension(
                 TypedValue.COMPLEX_UNIT_DIP, dp, getResources().getDisplayMetrics());
     }
