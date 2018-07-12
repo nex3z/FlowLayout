@@ -1,150 +1,300 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.nex3z.flowlayout.sample.MainActivity">
 
-    <com.nex3z.flowlayout.FlowLayout
-        android:id="@+id/flow"
+    <LinearLayout
+        android:id="@+id/activity_main"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:flChildSpacing="auto"
-        app:flRowSpacing="8dp"/>
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-    <com.nex3z.flowlayout.FlowLayout
-        android:id="@+id/flow2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        app:flChildSpacing="auto"
-        app:flChildSpacingForLastRow="align"
-        app:flRowSpacing="8dp">
-
-        <TextView
-            android:layout_width="60dp"
+        <com.nex3z.flowlayout.FlowLayout
+            android:id="@+id/flow"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:padding="8dp"
-            android:background="@drawable/label_bg"
-            android:text="@string/sun"/>
+            app:flChildSpacing="auto"
+            app:flRowSpacing="8dp" />
 
-        <TextView
-            android:layout_width="60dp"
+        <com.nex3z.flowlayout.FlowLayout
+            android:id="@+id/flow2"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:padding="8dp"
-            android:background="@drawable/label_bg"
-            android:text="@string/mon"/>
+            android:layout_marginTop="32dp"
+            app:flChildSpacing="auto"
+            app:flChildSpacingForLastRow="align"
+            app:flRowSpacing="8dp">
 
-        <TextView
-            android:layout_width="60dp"
+            <TextView
+                android:layout_width="60dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/label_bg"
+                android:gravity="center"
+                android:padding="8dp"
+                android:text="@string/sun" />
+
+            <TextView
+                android:layout_width="60dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/label_bg"
+                android:gravity="center"
+                android:padding="8dp"
+                android:text="@string/mon" />
+
+            <TextView
+                android:layout_width="60dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/label_bg"
+                android:gravity="center"
+                android:padding="8dp"
+                android:text="@string/tue" />
+
+            <TextView
+                android:layout_width="60dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/label_bg"
+                android:gravity="center"
+                android:padding="8dp"
+                android:text="@string/wed" />
+
+            <TextView
+                android:layout_width="60dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/label_bg"
+                android:gravity="center"
+                android:padding="8dp"
+                android:text="@string/thu" />
+
+            <TextView
+                android:layout_width="60dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/label_bg"
+                android:gravity="center"
+                android:padding="8dp"
+                android:text="@string/fri" />
+
+            <TextView
+                android:layout_width="60dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/label_bg"
+                android:gravity="center"
+                android:padding="8dp"
+                android:text="@string/sat" />
+
+        </com.nex3z.flowlayout.FlowLayout>
+
+
+        <com.nex3z.flowlayout.FlowLayout
+            android:id="@+id/gravity_default"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:padding="8dp"
-            android:background="@drawable/label_bg"
-            android:text="@string/tue"/>
+            android:layout_marginTop="32dp"
+            android:background="@drawable/box"
+            app:flChildSpacing="8dp"
+            app:flChildSpacingForLastRow="align"
+            app:flRowSpacing="8dp">
 
-        <TextView
-            android:layout_width="60dp"
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/label_bg2"
+                android:text="gravity"
+                android:textSize="24sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/label_bg2"
+                android:text="top/def" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/label_bg2"
+                android:layout_margin="4dp"
+                android:text="add-margin" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/label_bg2"
+                android:padding="4dp"
+                android:text="add-padding" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/label_bg2"
+                android:text="gravity"
+                android:textSize="24sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/label_bg2"
+                android:text="default" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/label_bg2"
+                android:layout_margin="4dp"
+                android:text="add-margin" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/label_bg2"
+                android:padding="4dp"
+                android:text="add-padding" />
+        </com.nex3z.flowlayout.FlowLayout>
+
+        <com.nex3z.flowlayout.FlowLayout
+            android:id="@+id/gravity_center"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:padding="8dp"
-            android:background="@drawable/label_bg"
-            android:text="@string/wed"/>
+            android:layout_marginTop="32dp"
+            android:background="@drawable/box"
+            app:flRowVerticalGravity="center"
+            app:flChildSpacing="8dp"
+            app:flChildSpacingForLastRow="align"
+            app:flRowSpacing="8dp">
 
-        <TextView
-            android:layout_width="60dp"
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/label_bg2"
+                android:text="gravity"
+                android:textSize="24sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/label_bg2"
+                android:text="center" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/label_bg2"
+                android:layout_margin="4dp"
+                android:text="add-margin" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/label_bg2"
+                android:padding="4dp"
+                android:text="add-padding" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/label_bg2"
+                android:text="gravity"
+                android:textSize="24sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/label_bg2"
+                android:text="center" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/label_bg2"
+                android:layout_margin="4dp"
+                android:text="add-margin" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/label_bg2"
+                android:padding="4dp"
+                android:text="add-padding" />
+        </com.nex3z.flowlayout.FlowLayout>
+
+        <com.nex3z.flowlayout.FlowLayout
+            android:id="@+id/gravity_bottom"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:padding="8dp"
-            android:background="@drawable/label_bg"
-            android:text="@string/thu"/>
+            android:layout_marginTop="32dp"
+            android:background="@drawable/box"
+            app:flRowVerticalGravity="bottom"
+            app:flChildSpacing="8dp"
+            app:flChildSpacingForLastRow="align"
+            app:flRowSpacing="8dp">
 
-        <TextView
-            android:layout_width="60dp"
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/label_bg2"
+                android:text="gravity"
+                android:textSize="24sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/label_bg2"
+                android:text="bottom" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/label_bg2"
+                android:layout_margin="4dp"
+                android:text="add-margin" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/label_bg2"
+                android:padding="4dp"
+                android:text="add-padding" />
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/label_bg2"
+                android:text="gravity"
+                android:textSize="24sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/label_bg2"
+                android:text="bottom" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/label_bg2"
+                android:layout_margin="4dp"
+                android:text="add-margin" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/label_bg2"
+                android:padding="4dp"
+                android:text="add-padding" />
+        </com.nex3z.flowlayout.FlowLayout>
+
+        <Button
+            android:id="@+id/btn_recyclerview"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:padding="8dp"
-            android:background="@drawable/label_bg"
-            android:text="@string/fri"/>
+            android:layout_marginTop="32dp"
+            android:text="@string/with_recyclerview" />
 
-        <TextView
-            android:layout_width="60dp"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:padding="8dp"
-            android:background="@drawable/label_bg"
-            android:text="@string/sat"/>
-
-    </com.nex3z.flowlayout.FlowLayout>
-
-
-    <com.nex3z.flowlayout.FlowLayout
-        android:id="@+id/flow3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        app:flAlignBottom="true"
-        app:flChildSpacing="8dp"
-        app:flChildSpacingForLastRow="align"
-        app:flRowSpacing="8dp">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/align_bottom"
-            android:textSize="24sp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/sun" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/mon" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/tue" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/wed" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/thu" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/fri" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/sat" />
-    </com.nex3z.flowlayout.FlowLayout>
-
-    <Button
-        android:id="@+id/btn_recyclerview"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="@string/with_recyclerview"/>
-
-</LinearLayout>
+    </LinearLayout>
+</android.support.v4.widget.NestedScrollView>
