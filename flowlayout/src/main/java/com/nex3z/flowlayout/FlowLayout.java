@@ -477,6 +477,10 @@ public class FlowLayout extends ViewGroup {
         requestLayout();
     }
 
+    public int getRowsCount() {
+        return mChildNumForRow.size();
+    }
+
     private float getSpacingForRow(int spacingAttribute, int rowSize, int usedSize, int childNum) {
         float spacing;
         if (spacingAttribute == SPACING_AUTO) {
