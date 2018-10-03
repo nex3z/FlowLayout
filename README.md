@@ -10,7 +10,7 @@ A FlowLayout for Android, which allows child views flow to next row when there i
 ## Gradle
 
 ```
-compile 'com.nex3z:flow-layout:1.2.3'
+compile 'com.nex3z:flow-layout:1.2.4'
 ```
 
 
