@@ -22,7 +22,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initButton() {
-        Button btn = (Button) findViewById(R.id.btn_recyclerview);
+        Button btn = findViewById(R.id.btn_recyclerview);
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void fillAutoSpacingLayout() {
-        FlowLayout flowLayout = (FlowLayout) findViewById(R.id.flow);
+        FlowLayout flowLayout = findViewById(R.id.flow);
         String[] dummyTexts = getResources().getStringArray(R.array.lorem_ipsum);
 
         for (String text : dummyTexts) {
