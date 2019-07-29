@@ -9,8 +9,16 @@ A FlowLayout for Android, which allows child views flow to next row when there i
 
 ## Gradle
 
+AndroidX:
+
 ```
-compile 'com.nex3z:flow-layout:1.2.4'
+implementation 'com.nex3z:flow-layout:1.3.0'
+```
+
+AppCompact:
+
+```
+implementation 'com.nex3z:flow-layout:1.2.4'
 ```
 
 
