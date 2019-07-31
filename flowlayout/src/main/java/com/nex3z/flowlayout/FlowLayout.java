@@ -2,11 +2,13 @@ package com.nex3z.flowlayout;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Canvas;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -125,6 +127,9 @@ public class FlowLayout extends ViewGroup {
 
         for (int i = 0; i < childCount; i++) {
             View child = getChildAt(i);
+            if(child instanceof TextView) {
+                System.out.println(1);
+            }
             if (child.getVisibility() == GONE) {
                 continue;
             }
@@ -313,6 +318,14 @@ public class FlowLayout extends ViewGroup {
                     horizontalGravity, layoutWidth, horizontalPadding, row + 1);
             y += rowHeight + mAdjustedRowSpacing;
         }
+    }
+
+    public int getVisbleChildrenCount() {
+        int count = 0;
+        for(int i=0; i<Math.min(getRowsCount(), getMaxRows()); i++) {
+            count += mChildNumForRow.get(i);
+        }
+        return count;
     }
 
     private int getHorizontalGravityOffsetForRow(int horizontalGravity, int parentWidth, int horizontalPadding, int row) {
