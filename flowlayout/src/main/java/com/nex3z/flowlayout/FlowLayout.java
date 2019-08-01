@@ -125,10 +125,13 @@ public class FlowLayout extends ViewGroup {
                 ? 0 : mChildSpacing;
         final float tmpSpacing = childSpacing == SPACING_AUTO ? mMinChildSpacing : childSpacing;
 
+        TextView childShowMoreBtn = null;
         for (int i = 0; i < childCount; i++) {
             View child = getChildAt(i);
-            if(child instanceof TextView) {
-                System.out.println(1);
+            if(i == 0) {
+                childShowMoreBtn = (TextView) child;
+                childShowMoreBtn.setText("Show More");
+                this.removeViewAt(0);
             }
             if (child.getVisibility() == GONE) {
                 continue;
@@ -145,6 +148,7 @@ public class FlowLayout extends ViewGroup {
                 measureChild(child, widthMeasureSpec, heightMeasureSpec);
             }
 
+            int childShowMoreBtnWidth = childShowMoreBtn.getMeasuredWidth() + horizontalMargin;
             int childWidth = child.getMeasuredWidth() + horizontalMargin;
             int childHeight = child.getMeasuredHeight() + verticalMargin;
             if (allowFlow && rowWidth + childWidth > rowSize) { // Need flow to next row
@@ -164,6 +168,16 @@ public class FlowLayout extends ViewGroup {
                 rowWidth = childWidth + (int) tmpSpacing;
                 rowTotalChildWidth = childWidth;
                 maxChildHeightInRow = childHeight;
+
+                if(mChildNumForRow.size() == getMaxRows() - 1 && rowWidth + childShowMoreBtnWidth <= rowSize)
+                    this.addView(childShowMoreBtn, getCurrentChildrenCount());
+                else {
+                    View temp = this.getChildAt(getCurrentChildrenCount() - 1);
+                    this.removeViewAt(getCurrentChildrenCount() - 1);
+                    this.addView(childShowMoreBtn, getCurrentChildrenCount());
+                    this.addView(temp, getCurrentChildrenCount());
+                }
+
             } else {
                 childNumInRow++;
                 rowWidth += childWidth + tmpSpacing;
@@ -236,6 +250,10 @@ public class FlowLayout extends ViewGroup {
         measuredHeight = heightMode == MeasureSpec.EXACTLY ? heightSize : measuredHeight;
 
         setMeasuredDimension(measuredWidth, measuredHeight);
+
+        if(getRowsCount() > getMaxRows()) {
+
+        }
     }
 
     @Override
@@ -325,6 +343,13 @@ public class FlowLayout extends ViewGroup {
         for(int i=0; i<Math.min(getRowsCount(), getMaxRows()); i++) {
             count += mChildNumForRow.get(i);
         }
+        return count;
+    }
+
+    private int getCurrentChildrenCount() {
+        int count = 0;
+        for(int eachCount: mChildNumForRow)
+            count += eachCount;
         return count;
     }
 
