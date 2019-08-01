@@ -116,6 +116,12 @@ public class FlowLayout extends ViewGroup {
         mWidthForRow.clear();
         mChildNumForRow.clear();
 
+        TextView childShowMoreBtn = null;
+        childShowMoreBtn = (TextView) this.getChildAt(0);
+
+        this.removeViewAt(0);
+
+
         int measuredHeight = 0, measuredWidth = 0, childCount = getChildCount();
         int rowWidth = 0, maxChildHeightInRow = 0, childNumInRow = 0;
         final int rowSize = widthSize - getPaddingLeft() - getPaddingRight();
@@ -125,14 +131,18 @@ public class FlowLayout extends ViewGroup {
                 ? 0 : mChildSpacing;
         final float tmpSpacing = childSpacing == SPACING_AUTO ? mMinChildSpacing : childSpacing;
 
-        TextView childShowMoreBtn = null;
+
+        childShowMoreBtn.setText("Show More");
+        LayoutParams childParamsForBtn = childShowMoreBtn.getLayoutParams();
+        measureChildWithMargins(childShowMoreBtn, widthMeasureSpec, 0, heightMeasureSpec, measuredHeight);
+        MarginLayoutParams marginParamsForBtn = (MarginLayoutParams) childParamsForBtn;
+        int horizontalMarginForBtn = marginParamsForBtn.leftMargin + marginParamsForBtn.rightMargin;
+        int verticalMarginForBtn = marginParamsForBtn.topMargin + marginParamsForBtn.bottomMargin;
+
+
         for (int i = 0; i < childCount; i++) {
             View child = getChildAt(i);
-            if(i == 0) {
-                childShowMoreBtn = (TextView) child;
-                childShowMoreBtn.setText("Show More");
-                this.removeViewAt(0);
-            }
+
             if (child.getVisibility() == GONE) {
                 continue;
             }
@@ -148,16 +158,39 @@ public class FlowLayout extends ViewGroup {
                 measureChild(child, widthMeasureSpec, heightMeasureSpec);
             }
 
-            int childShowMoreBtnWidth = childShowMoreBtn.getMeasuredWidth() + horizontalMargin;
+            int childShowMoreBtnWidth = childShowMoreBtn.getMeasuredWidth() + horizontalMarginForBtn;
+            int childShowMoreBtnHeight = child.getMeasuredHeight() + verticalMarginForBtn;
             int childWidth = child.getMeasuredWidth() + horizontalMargin;
             int childHeight = child.getMeasuredHeight() + verticalMargin;
             if (allowFlow && rowWidth + childWidth > rowSize) { // Need flow to next row
                 // Save parameters for current row
+
+
                 mHorizontalSpacingForRow.add(
                         getSpacingForRow(childSpacing, rowSize, rowTotalChildWidth, childNumInRow));
                 mChildNumForRow.add(childNumInRow);
                 mHeightForRow.add(maxChildHeightInRow);
                 mWidthForRow.add(rowWidth - (int) tmpSpacing);
+
+                if(mChildNumForRow.size() == getMaxRows() && rowWidth + childShowMoreBtnWidth <= rowSize) {
+                    this.addView(childShowMoreBtn, getCurrentChildrenCount());
+                    rowWidth += childShowMoreBtnWidth + tmpSpacing;
+                    rowTotalChildWidth += childShowMoreBtnWidth;
+                    maxChildHeightInRow = Math.max(maxChildHeightInRow, childShowMoreBtnHeight);
+                } else {
+                    View temp = this.getChildAt(getCurrentChildrenCount() - 1);
+                    this.removeViewAt(getCurrentChildrenCount() - 1);
+                    rowWidth -= temp.getMeasuredWidth();
+                    rowWidth += childShowMoreBtn.getMeasuredWidth();
+                    rowTotalChildWidth -= temp.getMeasuredWidth() - horizontalMargin + childShowMoreBtnWidth;
+                    // TODO also need to adjust mChildrenRows array
+                    this.addView(childShowMoreBtn, getCurrentChildrenCount() - 1);
+                    this.addView(temp, getCurrentChildrenCount());
+                }
+
+
+                // TODO need to do more adjusting based on the view replacement
+
                 if (mHorizontalSpacingForRow.size() <= mMaxRows) {
                     measuredHeight += maxChildHeightInRow;
                 }
@@ -168,15 +201,6 @@ public class FlowLayout extends ViewGroup {
                 rowWidth = childWidth + (int) tmpSpacing;
                 rowTotalChildWidth = childWidth;
                 maxChildHeightInRow = childHeight;
-
-                if(mChildNumForRow.size() == getMaxRows() - 1 && rowWidth + childShowMoreBtnWidth <= rowSize)
-                    this.addView(childShowMoreBtn, getCurrentChildrenCount());
-                else {
-                    View temp = this.getChildAt(getCurrentChildrenCount() - 1);
-                    this.removeViewAt(getCurrentChildrenCount() - 1);
-                    this.addView(childShowMoreBtn, getCurrentChildrenCount());
-                    this.addView(temp, getCurrentChildrenCount());
-                }
 
             } else {
                 childNumInRow++;
