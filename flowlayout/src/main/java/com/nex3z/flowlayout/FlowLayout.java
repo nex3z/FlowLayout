@@ -183,11 +183,14 @@ public class FlowLayout extends ViewGroup {
                         // consider for while
                         int swapCount = 1;
                         int originalChildNumInRow = childNumInRow;
+                        List<View> removeViews = new ArrayList<>();
                         while (rowWidth + childShowMoreBtnWidthAtLastRow > rowSize) {
                             // for situation +x button larger than one complete line
                             if(swapCount > originalChildNumInRow)
                                 break;
                             View temp = this.getChildAt(getCurrentChildrenCount() + childNumInRow - 1);
+                            // insert into first place
+                            removeViews.add(0, temp);
                             this.removeViewAt(getCurrentChildrenCount() + childNumInRow - 1);
                             rowWidth -= temp.getMeasuredWidth() + horizontalMargin + tmpSpacing;
                             rowTotalChildWidth -= temp.getMeasuredWidth() + horizontalMargin;
@@ -211,7 +214,12 @@ public class FlowLayout extends ViewGroup {
                         rowWidth += childShowMoreBtnWidthAtLastRow + tmpSpacing;
                         rowTotalChildWidth += childShowMoreBtnWidthAtLastRow;
                         childNumInRow++;
+                        i = getCurrentChildrenCount() + childNumInRow - 1;
                         maxChildHeightInRow = Math.max(maxChildHeightInRow, childShowMoreBtnHeightAtLastRow);
+                        // add back the view which was temporarily removed
+                        for(int index=0; index<removeViews.size(); index++) {
+                            this.addView(removeViews.get(index), getCurrentChildrenCount() + childNumInRow + index);
+                        }
                         childCount++;
 
 
