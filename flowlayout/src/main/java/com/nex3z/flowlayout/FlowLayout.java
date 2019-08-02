@@ -119,7 +119,8 @@ public class FlowLayout extends ViewGroup {
         mChildNumForRow.clear();
 
         TextView childShowMoreBtn = null;
-        if(this.getChildAt(0).getTag() != null && this.getChildAt(0).getTag().toString().equals(SHOW_MORE_BUTTON_TAG_FOR_CALENDAR_HISTORY)) {
+        // If the first child view is +X button, we remove it and store its reference
+        if(this.getChildAt(0) != null && this.getChildAt(0).getTag() != null && this.getChildAt(0).getTag().toString().equals(SHOW_MORE_BUTTON_TAG_FOR_CALENDAR_HISTORY)) {
             childShowMoreBtn = (TextView) this.getChildAt(0);
             this.removeViewAt(0);
         }
@@ -132,11 +133,11 @@ public class FlowLayout extends ViewGroup {
         final int childSpacing = mChildSpacing == SPACING_AUTO && widthMode == MeasureSpec.UNSPECIFIED
                 ? 0 : mChildSpacing;
         final float tmpSpacing = childSpacing == SPACING_AUTO ? mMinChildSpacing : childSpacing;
-
-        int horizontalMarginForBtn;
-        int verticalMarginForBtn;
-
         for (int i = 0; i < childCount; i++) {
+            // For Error handling
+            if(getChildAt(i) == null)
+                break;
+
             View child = getChildAt(i);
             if (child.getVisibility() == GONE) {
                 continue;
@@ -152,16 +153,17 @@ public class FlowLayout extends ViewGroup {
             } else {
                 measureChild(child, widthMeasureSpec, heightMeasureSpec);
             }
-
-
             int childWidth = child.getMeasuredWidth() + horizontalMargin;
             int childHeight = child.getMeasuredHeight() + verticalMargin;
             if (allowFlow && rowWidth + childWidth > rowSize) { // Need flow to next row
-                // Save parameters for current row
+                // Used for store the margin for +X button
+                int horizontalMarginForBtn;
+                int verticalMarginForBtn;
 
                 if(childShowMoreBtn != null) {
+                    // Check if reach the max row limit
                     if(mChildNumForRow.size() == getMaxRows() - 1) {
-
+                        // Set the original left number for +X button, and calculate the width of it.
                         childShowMoreBtn.setText("+" + (childCount - getCurrentChildrenCount() - childNumInRow));
                         LayoutParams childParamsForBtnAtLastRow = childShowMoreBtn.getLayoutParams();
                         measureChildWithMargins(childShowMoreBtn, widthMeasureSpec, 0, heightMeasureSpec, measuredHeight);
@@ -171,31 +173,23 @@ public class FlowLayout extends ViewGroup {
                         int childShowMoreBtnWidthAtLastRow = childShowMoreBtn.getMeasuredWidth() + horizontalMarginForBtn;
                         int childShowMoreBtnHeightAtLastRow = childShowMoreBtn.getMeasuredHeight() + verticalMarginForBtn;
 
-//                        childShowMoreBtn.setText("+" + (childCount - getCurrentChildrenCount() - childNumInRow + 1));
-//                        LayoutParams childParamsForBtnNotAtLastRow = childShowMoreBtn.getLayoutParams();
-//                        measureChildWithMargins(childShowMoreBtn, widthMeasureSpec, 0, heightMeasureSpec, measuredHeight);
-//                        MarginLayoutParams marginParamsForBtnNotAtLastRow = (MarginLayoutParams) childParamsForBtnNotAtLastRow;
-//                        horizontalMarginForBtn = marginParamsForBtnNotAtLastRow.leftMargin + marginParamsForBtnNotAtLastRow.rightMargin;
-//                        verticalMarginForBtn = marginParamsForBtnNotAtLastRow.topMargin + marginParamsForBtnNotAtLastRow.bottomMargin;
-//                        int childShowMoreBtnWidthNotAtLastRow = childShowMoreBtn.getMeasuredWidth() + horizontalMarginForBtn;
-//                        int childShowMoreBtnHeightNotAtLastRow = child.getMeasuredHeight() + verticalMarginForBtn;
-
-                        // consider for while
+                        // Do while loop to remove the card view in order to let +X button appear in the last row
                         int swapCount = 1;
                         int originalChildNumInRow = childNumInRow;
                         List<View> removeViews = new ArrayList<>();
                         while (rowWidth + childShowMoreBtnWidthAtLastRow > rowSize) {
-                            // for situation +x button larger than one complete line
+                            // Error handling for situation +x button larger than one complete line
+                            // Should never hit into it. Getting into means data original text too long.
                             if(swapCount > originalChildNumInRow)
                                 break;
                             View temp = this.getChildAt(getCurrentChildrenCount() + childNumInRow - 1);
-                            // insert into first place
+                            // Insert into first place in order to keep the same order as before.
                             removeViews.add(0, temp);
                             this.removeViewAt(getCurrentChildrenCount() + childNumInRow - 1);
                             rowWidth -= temp.getMeasuredWidth() + horizontalMargin + tmpSpacing;
                             rowTotalChildWidth -= temp.getMeasuredWidth() + horizontalMargin;
 
-                            // re-measure the new width for the text button, cause it changed new text(+ number, number changed)
+                            // Re-measure the new width for the text button, cause it changed new text(+ number, number changed)
                             childShowMoreBtn.setText("+" + (childCount - getCurrentChildrenCount() - originalChildNumInRow + swapCount));
                             childParamsForBtnAtLastRow = childShowMoreBtn.getLayoutParams();
                             measureChildWithMargins(childShowMoreBtn, widthMeasureSpec, 0, heightMeasureSpec, measuredHeight);
@@ -210,55 +204,29 @@ public class FlowLayout extends ViewGroup {
                         }
 
                         // Here, the childNumInRows are still the number which should be shown on this row
+                        // Add the +X button
                         this.addView(childShowMoreBtn, getCurrentChildrenCount() + childNumInRow);
                         rowWidth += childShowMoreBtnWidthAtLastRow + tmpSpacing;
                         rowTotalChildWidth += childShowMoreBtnWidthAtLastRow;
                         childNumInRow++;
+                        // Change the index i
                         i = getCurrentChildrenCount() + childNumInRow - 1;
                         maxChildHeightInRow = Math.max(maxChildHeightInRow, childShowMoreBtnHeightAtLastRow);
                         // add back the view which was temporarily removed
                         for(int index=0; index<removeViews.size(); index++) {
                             this.addView(removeViews.get(index), getCurrentChildrenCount() + childNumInRow + index);
                         }
+                        // For +X button
                         childCount++;
-
-
-//
-//                        if (rowWidth + childShowMoreBtnWidthAtLastRow <= rowSize) {
-////                            childShowMoreBtn.setText("+" + (childCount - getCurrentChildrenCount() - childNumInRow));
-//                            this.addView(childShowMoreBtn, getCurrentChildrenCount() + childNumInRow);
-//                            rowWidth += childShowMoreBtnWidthAtLastRow + tmpSpacing;
-//                            rowTotalChildWidth += childShowMoreBtnWidthAtLastRow;
-//                            childNumInRow++;
-//                            maxChildHeightInRow = Math.max(maxChildHeightInRow, childShowMoreBtnHeightAtLastRow);
-//                            i++;
-//                        }
-//                        else {
-//                            childShowMoreBtn.setText("+" + (childCount - getCurrentChildrenCount() - childNumInRow + 1));
-//                            View temp = this.getChildAt(getCurrentChildrenCount() + childNumInRow - 1);
-//                            this.removeViewAt(getCurrentChildrenCount() + childNumInRow - 1);
-//                            rowWidth -= temp.getMeasuredWidth();
-//                            rowWidth += childShowMoreBtn.getMeasuredWidth();
-//                            rowTotalChildWidth += -temp.getMeasuredWidth() + childShowMoreBtn.getMeasuredWidth();
-//                            this.addView(childShowMoreBtn, getCurrentChildrenCount() + childNumInRow - 1);
-//                            this.addView(temp, getCurrentChildrenCount() + childNumInRow);
-//                        }
-//                        childCount++;
                     }
                 }
 
-
+                // Save parameters for current row
                 mHorizontalSpacingForRow.add(
                         getSpacingForRow(childSpacing, rowSize, rowTotalChildWidth, childNumInRow));
                 mChildNumForRow.add(childNumInRow);
                 mHeightForRow.add(maxChildHeightInRow);
                 mWidthForRow.add(rowWidth - (int) tmpSpacing);
-
-
-
-
-                // TODO need to do more adjusting based on the view replacement
-
                 if (mHorizontalSpacingForRow.size() <= mMaxRows) {
                     measuredHeight += maxChildHeightInRow;
                 }
@@ -269,7 +237,6 @@ public class FlowLayout extends ViewGroup {
                 rowWidth = childWidth + (int) tmpSpacing;
                 rowTotalChildWidth = childWidth;
                 maxChildHeightInRow = childHeight;
-
             } else {
                 childNumInRow++;
                 rowWidth += childWidth + tmpSpacing;
