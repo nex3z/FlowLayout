@@ -136,6 +136,7 @@ public class FlowLayout extends ViewGroup {
         final int childSpacing = mChildSpacing == SPACING_AUTO && widthMode == MeasureSpec.UNSPECIFIED
                 ? 0 : mChildSpacing;
         final float tmpSpacing = childSpacing == SPACING_AUTO ? mMinChildSpacing : childSpacing;
+        boolean showMoreButtonAdded = false;
 
         for (int i = 0; i < childCount; i++) {
             View child = getChildAt(i);
@@ -168,7 +169,7 @@ public class FlowLayout extends ViewGroup {
                 int verticalMarginForBtn = 0;
 
                 if (childShowMoreBtn != null) {
-                    // Check if the max row limit is reached
+                    // Check if the max row limit is reached (i.e. +X needs to be added)
                     if (mChildNumForRow.size() == getMaxRows() - 1) {
                         // Set the original remaining number number of children for +X button
                         childShowMoreBtn.setText(getRemainingChildrenCountString((childCount - getCurrentChildrenCount() - childNumInRow)));
@@ -187,12 +188,12 @@ public class FlowLayout extends ViewGroup {
                         int childShowMoreBtnWidthAtLastRow = childShowMoreBtn.getMeasuredWidth() + horizontalMarginForBtn;
                         int childShowMoreBtnHeightAtLastRow = childShowMoreBtn.getMeasuredHeight() + verticalMarginForBtn;
 
-                        int swapCount = 1;
+                        int swapCount = 0;
                         int originalChildNumInRow = childNumInRow;
                         removedViews.clear();
 
-                        // If the maximum width of the row is exceeded with the current number of
-                        // children plus the +X button, then we need to remove another child and
+                        // If the maximum width of the row is exceeded with the current children of
+                        // the last row plus the +X button, then we need to remove another child and
                         // repeat the process. Since the remaining number of children has changed
                         // within the +X button, the +X button needs to be remeasured. We need to
                         // repeat this process until enough children are moved for the +X button
@@ -200,13 +201,17 @@ public class FlowLayout extends ViewGroup {
                         while (rowWidth + childShowMoreBtnWidthAtLastRow > rowSize) {
                             // Get the last element of the last row
                             View temp = this.getChildAt(getCurrentChildrenCount() + childNumInRow - 1);
-                            // Insert last element into first position in order to keep the same order as before
+                            // Insert last element into first position to maintain ordering
                             removedViews.add(0, temp);
                             // Remove last element of the last row
                             this.removeViewAt(getCurrentChildrenCount() + childNumInRow - 1);
-                            // Remeasure the row width, including spacing
+                            // Increment the number of views removed
+                            swapCount++;
+                            // Decrement the number of visible children left in the row
+                            childNumInRow--;
+                            // Remeasure the row width without the newly removed element, including spacing
                             rowWidth -= temp.getMeasuredWidth() + horizontalMargin + tmpSpacing;
-                            // Remeasure the row width, without spacing
+                            // Remeasure the row width without the newly removed element, without spacing
                             rowTotalChildWidth -= temp.getMeasuredWidth() + horizontalMargin;
 
                             // Since the remaining children count has changed, we need to set the
@@ -227,30 +232,29 @@ public class FlowLayout extends ViewGroup {
                             // count, including the margins
                             childShowMoreBtnWidthAtLastRow = childShowMoreBtn.getMeasuredWidth() + horizontalMarginForBtn;
                             childShowMoreBtnHeightAtLastRow = childShowMoreBtn.getMeasuredHeight() + verticalMarginForBtn;
-
-                            // Increment the number of views removed and decrement the number of
-                            // visible children left in the row
-                            swapCount++;
-                            childNumInRow--;
                         }
 
                         // At this point, enough children views have been removed to fit the +X
                         // button within the last row. Now, add the +X button
                         this.addView(childShowMoreBtn, getCurrentChildrenCount() + childNumInRow);
 
+                        // Update the flag for +X button
+                        showMoreButtonAdded = true;
+
                         // Update the index position of the +X button so that it can be found on
                         // subsequent onMeasures (e.g. when the device is rotated)
                         showMoreButtonIndex = getCurrentChildrenCount() + childNumInRow;
 
-                        // Update the row width, including spacing
+                        // Update the row width with the newly added +X button, including spacing
                         rowWidth += childShowMoreBtnWidthAtLastRow + tmpSpacing;
 
-                        // Update the row width, without spacing
+                        // Update the row width with the newly added +X button, without spacing
                         rowTotalChildWidth += childShowMoreBtnWidthAtLastRow;
                         // Update the number of children views in the last row, including the +X
                         // button
                         childNumInRow++;
-                        // Update the index i to the index of the +X button
+                        // Update the index i to the index of the +X button so that it can
+                        // iterate to the element immediately proceeding the +X button
                         i = getCurrentChildrenCount() + childNumInRow - 1;
 
                         maxChildHeightInRow = Math.max(maxChildHeightInRow, childShowMoreBtnHeightAtLastRow);
@@ -276,11 +280,22 @@ public class FlowLayout extends ViewGroup {
                 }
                 measuredWidth = Math.max(measuredWidth, rowWidth);
 
-                // Place the child view to next row
-                childNumInRow = 1;
-                rowWidth = childWidth + (int) tmpSpacing;
-                rowTotalChildWidth = childWidth;
-                maxChildHeightInRow = childHeight;
+                if (showMoreButtonAdded) {
+                    // When the +X button is added, we will begin a new row beginning with the
+                    // element immediately proceeding the +X button so we need to reinitialize the
+                    // elements
+                    childNumInRow = 0;
+                    rowWidth = 0;
+                    rowTotalChildWidth = 0;
+                    maxChildHeightInRow = 0;
+                    showMoreButtonAdded = false;
+                } else {
+                    // Place the child view to next row
+                    childNumInRow = 1;
+                    rowWidth = childWidth + (int) tmpSpacing;
+                    rowTotalChildWidth = childWidth;
+                    maxChildHeightInRow = childHeight;
+                }
             } else {
                 childNumInRow++;
                 rowWidth += childWidth + tmpSpacing;
