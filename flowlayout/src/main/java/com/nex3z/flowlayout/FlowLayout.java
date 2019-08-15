@@ -43,7 +43,7 @@ public class FlowLayout extends ViewGroup {
     private static final float DEFAULT_ROW_SPACING = 0;
     private static final boolean DEFAULT_RTL = false;
     private static final int DEFAULT_MAX_ROWS = Integer.MAX_VALUE;
-    public static final String SHOW_MORE_BUTTON_TAG_FOR_CALENDAR_HISTORY = "show_more_button_for_calendar_history";
+    public static final String SHOW_MORE_BUTTON_TAG = "show_more_button_tag";
 
     private boolean mFlow = DEFAULT_FLOW;
     private int mChildSpacing = DEFAULT_CHILD_SPACING;
@@ -123,7 +123,7 @@ public class FlowLayout extends ViewGroup {
         // reference
         if (this.getChildAt(showMoreButtonIndex) != null &&
                 this.getChildAt(showMoreButtonIndex).getTag() != null &&
-                this.getChildAt(showMoreButtonIndex).getTag().toString().equals(SHOW_MORE_BUTTON_TAG_FOR_CALENDAR_HISTORY)) {
+                this.getChildAt(showMoreButtonIndex).getTag().toString().equals(SHOW_MORE_BUTTON_TAG)) {
             childShowMoreBtn = (TextView) this.getChildAt(showMoreButtonIndex);
             this.removeViewAt(showMoreButtonIndex);
         }
