@@ -2,13 +2,11 @@ package com.nex3z.flowlayout;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.Canvas;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -45,7 +43,7 @@ public class FlowLayout extends ViewGroup {
     private static final float DEFAULT_ROW_SPACING = 0;
     private static final boolean DEFAULT_RTL = false;
     private static final int DEFAULT_MAX_ROWS = Integer.MAX_VALUE;
-    public static final String SHOW_MORE_BUTTON_TAG_FOR_CALENDAR_HISTORY = "show_more_button_for_calendar_history";
+    public static final String SHOW_MORE_BUTTON_TAG = "show_more_button_tag";
 
     private boolean mFlow = DEFAULT_FLOW;
     private int mChildSpacing = DEFAULT_CHILD_SPACING;
@@ -64,6 +62,7 @@ public class FlowLayout extends ViewGroup {
     private List<Integer> mHeightForRow = new ArrayList<>();
     private List<Integer> mWidthForRow = new ArrayList<>();
     private List<Integer> mChildNumForRow = new ArrayList<>();
+    private List<View> removedViews = new ArrayList<>();
 
     public FlowLayout(Context context) {
         this(context, null);
@@ -120,8 +119,11 @@ public class FlowLayout extends ViewGroup {
         mChildNumForRow.clear();
 
         TextView childShowMoreBtn = null;
-        // If the first child view is +X button, we remove it and store its reference
-        if(this.getChildAt(showMoreButtonIndex) != null && this.getChildAt(showMoreButtonIndex).getTag() != null && this.getChildAt(showMoreButtonIndex).getTag().toString().equals(SHOW_MORE_BUTTON_TAG_FOR_CALENDAR_HISTORY)) {
+        // If the child view at showMoreButtonIndex is the +X button, we remove it and store its
+        // reference
+        if (this.getChildAt(showMoreButtonIndex) != null &&
+                this.getChildAt(showMoreButtonIndex).getTag() != null &&
+                this.getChildAt(showMoreButtonIndex).getTag().toString().equals(SHOW_MORE_BUTTON_TAG)) {
             childShowMoreBtn = (TextView) this.getChildAt(showMoreButtonIndex);
             this.removeViewAt(showMoreButtonIndex);
         }
@@ -134,12 +136,16 @@ public class FlowLayout extends ViewGroup {
         final int childSpacing = mChildSpacing == SPACING_AUTO && widthMode == MeasureSpec.UNSPECIFIED
                 ? 0 : mChildSpacing;
         final float tmpSpacing = childSpacing == SPACING_AUTO ? mMinChildSpacing : childSpacing;
-        for (int i = 0; i < childCount; i++) {
-            // For Error handling
-            if(getChildAt(i) == null)
-                break;
+        boolean showMoreButtonAdded = false;
 
+        for (int i = 0; i < childCount; i++) {
             View child = getChildAt(i);
+
+            // For Error handling: in the case that i exceeds childCount and returns a null View
+            if (child == null) {
+                break;
+            }
+
             if (child.getVisibility() == GONE) {
                 continue;
             }
@@ -154,18 +160,20 @@ public class FlowLayout extends ViewGroup {
             } else {
                 measureChild(child, widthMeasureSpec, heightMeasureSpec);
             }
+
             int childWidth = child.getMeasuredWidth() + horizontalMargin;
             int childHeight = child.getMeasuredHeight() + verticalMargin;
             if (allowFlow && rowWidth + childWidth > rowSize) { // Need flow to next row
-                // Used for store the margin for +X button
+                // Used to store the margin for +X button
                 int horizontalMarginForBtn = 0;
                 int verticalMarginForBtn = 0;
 
-                if(childShowMoreBtn != null) {
-                    // Check if reach the max row limit
-                    if(mChildNumForRow.size() == getMaxRows() - 1) {
-                        // Set the original left number for +X button, and calculate the width of it.
-                        childShowMoreBtn.setText("+" + (childCount - getCurrentChildrenCount() - childNumInRow));
+                if (childShowMoreBtn != null) {
+                    // Check if the max row limit is reached (i.e. +X button needs to be added)
+                    if (mChildNumForRow.size() == getMaxRows() - 1) {
+                        // Set the original remaining number of children for +X button
+                        childShowMoreBtn.setText(getRemainingChildrenCountString((childCount - getCurrentChildrenCount() - childNumInRow)));
+                        // Calculate the width of the +X button
                         LayoutParams childParamsForBtnAtLastRow = childShowMoreBtn.getLayoutParams();
                         if (childParamsForBtnAtLastRow instanceof MarginLayoutParams) {
                             measureChildWithMargins(childShowMoreBtn, widthMeasureSpec, 0, heightMeasureSpec, measuredHeight);
@@ -176,27 +184,40 @@ public class FlowLayout extends ViewGroup {
                             measureChild(childShowMoreBtn, widthMeasureSpec, heightMeasureSpec);
                         }
 
+                        // Calculate width and height of the +X button, including the margins
                         int childShowMoreBtnWidthAtLastRow = childShowMoreBtn.getMeasuredWidth() + horizontalMarginForBtn;
                         int childShowMoreBtnHeightAtLastRow = childShowMoreBtn.getMeasuredHeight() + verticalMarginForBtn;
 
-                        // Do while loop to remove the card view in order to let +X button appear in the last row
-                        int swapCount = 1;
+                        int swapCount = 0;
                         int originalChildNumInRow = childNumInRow;
-                        List<View> removeViews = new ArrayList<>();
+                        removedViews.clear();
+
+                        // If the maximum width of the row is exceeded with the current children of
+                        // the last row plus the +X button, then we need to remove another child and
+                        // repeat the process. Since the remaining number of children has changed
+                        // within the +X button, the +X button needs to be remeasured. We need to
+                        // repeat this process until enough children are moved for the +X button
+                        // to fit within the last (i.e. max) row
                         while (rowWidth + childShowMoreBtnWidthAtLastRow > rowSize) {
-                            // Error handling for situation +x button larger than one complete line
-                            // Should never hit into it. Getting into means data original text too long.
-                            if(swapCount > originalChildNumInRow)
-                                break;
+                            // Get the last element of the last row
                             View temp = this.getChildAt(getCurrentChildrenCount() + childNumInRow - 1);
-                            // Insert into first place in order to keep the same order as before.
-                            removeViews.add(0, temp);
+                            // Insert last element into first position to maintain ordering
+                            removedViews.add(0, temp);
+                            // Remove last element of the last row
                             this.removeViewAt(getCurrentChildrenCount() + childNumInRow - 1);
+                            // Increment the number of views removed
+                            swapCount++;
+                            // Decrement the number of visible children left in the row
+                            childNumInRow--;
+                            // Remeasure the row width without the newly removed element, including spacing
                             rowWidth -= temp.getMeasuredWidth() + horizontalMargin + tmpSpacing;
+                            // Remeasure the row width without the newly removed element, without spacing
                             rowTotalChildWidth -= temp.getMeasuredWidth() + horizontalMargin;
 
-                            // Re-measure the new width for the text button, cause it changed new text(+ number, number changed)
-                            childShowMoreBtn.setText("+" + (childCount - getCurrentChildrenCount() - originalChildNumInRow + swapCount));
+                            // Since the remaining children count has changed, we need to set the
+                            // text again and remeasure the +X button
+                            childShowMoreBtn.setText(getRemainingChildrenCountString((childCount - getCurrentChildrenCount() - originalChildNumInRow + swapCount)));
+                            // Calculate the width of the +X button with the new children count
                             childParamsForBtnAtLastRow = childShowMoreBtn.getLayoutParams();
                             if (childParamsForBtnAtLastRow instanceof MarginLayoutParams) {
                                 measureChildWithMargins(childShowMoreBtn, widthMeasureSpec, 0, heightMeasureSpec, measuredHeight);
@@ -207,28 +228,43 @@ public class FlowLayout extends ViewGroup {
                                 measureChild(childShowMoreBtn, widthMeasureSpec, heightMeasureSpec);
                             }
 
+                            // Calculate width and height of the +X button with the new children
+                            // count, including the margins
                             childShowMoreBtnWidthAtLastRow = childShowMoreBtn.getMeasuredWidth() + horizontalMarginForBtn;
                             childShowMoreBtnHeightAtLastRow = childShowMoreBtn.getMeasuredHeight() + verticalMarginForBtn;
-
-                            swapCount++;
-                            childNumInRow--;
                         }
 
-                        // Here, the childNumInRows are still the number which should be shown on this row
-                        // Add the +X button
+                        // At this point, enough children views have been removed to fit the +X
+                        // button within the last row. Now, add the +X button
                         this.addView(childShowMoreBtn, getCurrentChildrenCount() + childNumInRow);
+
+                        // Update the flag for +X button
+                        showMoreButtonAdded = true;
+
+                        // Update the index position of the +X button so that it can be found on
+                        // subsequent onMeasures (e.g. when the device is rotated)
                         showMoreButtonIndex = getCurrentChildrenCount() + childNumInRow;
+
+                        // Update the row width with the newly added +X button, including spacing
                         rowWidth += childShowMoreBtnWidthAtLastRow + tmpSpacing;
+
+                        // Update the row width with the newly added +X button, without spacing
                         rowTotalChildWidth += childShowMoreBtnWidthAtLastRow;
+                        // Update the number of children views in the last row, including the +X
+                        // button
                         childNumInRow++;
-                        // Change the index i
+                        // Update the index i to the index of the +X button so that it can
+                        // iterate to the element immediately proceeding the +X button
                         i = getCurrentChildrenCount() + childNumInRow - 1;
+
                         maxChildHeightInRow = Math.max(maxChildHeightInRow, childShowMoreBtnHeightAtLastRow);
-                        // add back the view which was temporarily removed
-                        for(int index=0; index<removeViews.size(); index++) {
-                            this.addView(removeViews.get(index), getCurrentChildrenCount() + childNumInRow + index);
+                        // Add back the views that were temporarily removed. When the max rows are
+                        // rendered, the children views past the +X button are merely hidden from
+                        // view
+                        for (int index = 0; index < removedViews.size(); index++) {
+                            this.addView(removedViews.get(index), getCurrentChildrenCount() + childNumInRow + index);
                         }
-                        // For +X button
+                        // Update the total children count, including the +X button
                         childCount++;
                     }
                 }
@@ -244,11 +280,22 @@ public class FlowLayout extends ViewGroup {
                 }
                 measuredWidth = Math.max(measuredWidth, rowWidth);
 
-                // Place the child view to next row
-                childNumInRow = 1;
-                rowWidth = childWidth + (int) tmpSpacing;
-                rowTotalChildWidth = childWidth;
-                maxChildHeightInRow = childHeight;
+                if (showMoreButtonAdded) {
+                    // When the +X button is added, we will begin a new row beginning with the
+                    // element immediately proceeding the +X button so we need to reinitialize the
+                    // elements
+                    childNumInRow = 0;
+                    rowWidth = 0;
+                    rowTotalChildWidth = 0;
+                    maxChildHeightInRow = 0;
+                    showMoreButtonAdded = false;
+                } else {
+                    // Place the child view to next row
+                    childNumInRow = 1;
+                    rowWidth = childWidth + (int) tmpSpacing;
+                    rowTotalChildWidth = childWidth;
+                    maxChildHeightInRow = childHeight;
+                }
             } else {
                 childNumInRow++;
                 rowWidth += childWidth + tmpSpacing;
@@ -321,6 +368,10 @@ public class FlowLayout extends ViewGroup {
         measuredHeight = heightMode == MeasureSpec.EXACTLY ? heightSize : measuredHeight;
 
         setMeasuredDimension(measuredWidth, measuredHeight);
+    }
+
+    private String getRemainingChildrenCountString(int remainingChildrenCount) {
+        return "+" + remainingChildrenCount;
     }
 
     @Override
