@@ -169,9 +169,9 @@ public class FlowLayout extends ViewGroup {
                 int verticalMarginForBtn = 0;
 
                 if (childShowMoreBtn != null) {
-                    // Check if the max row limit is reached (i.e. +X needs to be added)
+                    // Check if the max row limit is reached (i.e. +X button needs to be added)
                     if (mChildNumForRow.size() == getMaxRows() - 1) {
-                        // Set the original remaining number number of children for +X button
+                        // Set the original remaining number of children for +X button
                         childShowMoreBtn.setText(getRemainingChildrenCountString((childCount - getCurrentChildrenCount() - childNumInRow)));
                         // Calculate the width of the +X button
                         LayoutParams childParamsForBtnAtLastRow = childShowMoreBtn.getLayoutParams();
