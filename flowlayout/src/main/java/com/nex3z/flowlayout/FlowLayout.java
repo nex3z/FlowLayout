@@ -265,7 +265,7 @@ public class FlowLayout extends ViewGroup {
         int verticalRowGravity = mRowVerticalGravity & Gravity.VERTICAL_GRAVITY_MASK;
 
         int rowCount = mChildNumForRow.size(), childIdx = 0;
-        for (int row = 0; row < rowCount; row++) {
+        for (int row = 0; row < Math.min(rowCount, mMaxRows); row++) {
             int childNum = mChildNumForRow.get(row);
             int rowHeight = mHeightForRow.get(row);
             float spacing = mHorizontalSpacingForRow.get(row);
