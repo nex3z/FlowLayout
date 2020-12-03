@@ -12,7 +12,7 @@ A FlowLayout for Android, which allows child views flow to next row when there i
 AndroidX:
 
 ```
-implementation 'com.nex3z:flow-layout:1.3.1'
+implementation 'com.nex3z:flow-layout:1.3.2'
 ```
 
 AppCompact:
