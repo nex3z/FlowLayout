@@ -313,6 +313,14 @@ public class FlowLayout extends ViewGroup {
                     horizontalGravity, layoutWidth, horizontalPadding, row + 1);
             y += rowHeight + mAdjustedRowSpacing;
         }
+
+        for (int i = childIdx; i < getChildCount(); i++) {
+            View child = getChildAt(i);
+            if (child.getVisibility() == GONE) {
+                continue;
+            }
+            child.layout(0, 0, 0, 0);
+        }
     }
 
     private int getHorizontalGravityOffsetForRow(int horizontalGravity, int parentWidth, int horizontalPadding, int row) {
