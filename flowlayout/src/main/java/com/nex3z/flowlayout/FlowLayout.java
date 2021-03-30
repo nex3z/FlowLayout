@@ -71,32 +71,26 @@ public class FlowLayout extends ViewGroup {
                 attrs, R.styleable.FlowLayout, 0, 0);
         try {
             mFlow = a.getBoolean(R.styleable.FlowLayout_flFlow, DEFAULT_FLOW);
-            try {
-                mChildSpacing = a.getInt(R.styleable.FlowLayout_flChildSpacing, DEFAULT_CHILD_SPACING);
-            } catch (NumberFormatException e) {
-                mChildSpacing = a.getDimensionPixelSize(R.styleable.FlowLayout_flChildSpacing, (int) dpToPx(DEFAULT_CHILD_SPACING));
-            }
-            try {
-                mMinChildSpacing = a.getInt(R.styleable.FlowLayout_flMinChildSpacing, DEFAULT_CHILD_SPACING);
-            } catch (NumberFormatException e) {
-                mMinChildSpacing = a.getDimensionPixelSize(R.styleable.FlowLayout_flMinChildSpacing, (int) dpToPx(DEFAULT_CHILD_SPACING));
-            }
-            try {
-                mChildSpacingForLastRow = a.getInt(R.styleable.FlowLayout_flChildSpacingForLastRow, SPACING_UNDEFINED);
-            } catch (NumberFormatException e) {
-                mChildSpacingForLastRow = a.getDimensionPixelSize(R.styleable.FlowLayout_flChildSpacingForLastRow, (int) dpToPx(DEFAULT_CHILD_SPACING));
-            }
-            try {
-                mRowSpacing = a.getInt(R.styleable.FlowLayout_flRowSpacing, 0);
-            } catch (NumberFormatException e) {
-                mRowSpacing = a.getDimension(R.styleable.FlowLayout_flRowSpacing, dpToPx(DEFAULT_ROW_SPACING));
-            }
+            mChildSpacing = getDimensionOrInt(a, R.styleable.FlowLayout_flChildSpacing, (int) dpToPx(DEFAULT_CHILD_SPACING));
+            mMinChildSpacing = getDimensionOrInt(a, R.styleable.FlowLayout_flMinChildSpacing, (int) dpToPx(DEFAULT_CHILD_SPACING));
+            mChildSpacingForLastRow = getDimensionOrInt(a, R.styleable.FlowLayout_flChildSpacingForLastRow, SPACING_UNDEFINED);
+            mRowSpacing = getDimensionOrInt(a, R.styleable.FlowLayout_flRowSpacing, (int) dpToPx(DEFAULT_ROW_SPACING));
             mMaxRows = a.getInt(R.styleable.FlowLayout_flMaxRows, DEFAULT_MAX_ROWS);
             mRtl = a.getBoolean(R.styleable.FlowLayout_flRtl, DEFAULT_RTL);
             mGravity = a.getInt(R.styleable.FlowLayout_android_gravity, UNSPECIFIED_GRAVITY);
             mRowVerticalGravity = a.getInt(R.styleable.FlowLayout_flRowVerticalGravity, ROW_VERTICAL_GRAVITY_AUTO);
         } finally {
             a.recycle();
+        }
+    }
+
+    private int getDimensionOrInt(TypedArray a, int index, int defValue) {
+        TypedValue tv = new TypedValue();
+        a.getValue(index, tv);
+        if (tv.type == TypedValue.TYPE_DIMENSION) {
+            return a.getDimensionPixelSize(index, defValue);
+        } else {
+            return a.getInt(index, defValue);
         }
     }
 
